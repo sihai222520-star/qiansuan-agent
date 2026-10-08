@@ -263,7 +263,7 @@ _LOGIN_HTML_TEMPLATE = """\
   footer {{
     margin-top: 1.75rem;
     text-align: center;
-    color: color-mix(in srgb, var(--foreground) 45%, transparent);
+    color: color-mix(in srgb, var(--foreground) 55%, transparent);
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -296,7 +296,7 @@ _LOGIN_HTML_TEMPLATE = """\
     </div>
   </div>
   <footer>
-    <span class="sep"></span>Public bind &middot; Auth required<span class="sep"></span>
+    <span class="sep"></span>公网绑定 &middot; 需登录<span class="sep"></span>
   </footer>
 </main>
 {password_script}
@@ -377,7 +377,7 @@ _EMPTY_HTML = """\
 <main>
 <h1>登录不可用</h1>
 <p>此面板绑定到了非回环地址，但没有可用的登录方式。</p>
-<p>请配置内置的“用户名/密码”方式，或配置 OAuth 方式。</p>
+<p>请配置内置的“用户名/密码”方式，或配置 OAuth 方式。详见面板 <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard#authentication-gated-mode">认证文档</a>。</p>
 <p>若只需本地免登录使用，请绑定到 <code>127.0.0.1</code> 并通过 SSH 隧道或 Tailscale 连接。</p>
 </main>
 </body>
@@ -452,7 +452,7 @@ def render_login_html(*, next_path: str = "") -> str:
         _render_password_form(p, next_path) if getattr(p, "supports_password", False) else
         f'      <a class="provider-btn" '
         f'href="/auth/login?provider={html.escape(p.name, quote=True)}{next_qs}">'
-        f'使用 {html.escape(p.display_name)} 登录</a>'
+        f'使用{html.escape(p.display_name)}登录</a>'
         for p in providers
     ]
     needs_password_script = any(getattr(p, "supports_password", False) for p in providers)
@@ -477,7 +477,7 @@ def render_native_provider_choice_html(
         href = html.escape(f"{authorize_path}?{urlencode({**common, 'provider': p.name})}",
                            quote=True)
         buttons.append(f'      <a class="provider-btn" href="{href}">'
-                       f'使用 {html.escape(p.display_name)} 登录</a>')
+                       f'使用{html.escape(p.display_name)}登录</a>')
     if not buttons:
         return _EMPTY_HTML
     return _LOGIN_HTML_TEMPLATE.format(provider_buttons="\n".join(buttons), password_script="")
@@ -496,7 +496,7 @@ def _render_password_form(provider, next_path: str) -> str:
     return (
         f'      <form class="provider-form" data-provider="{pname}" '
         f'autocomplete="on">\n'
-        f'        <div class="form-title">使用 {plabel} 登录</div>\n'
+        f'        <div class="form-title">使用{plabel}登录</div>\n'
         f'        <input type="hidden" name="next" value="{safe_next}">\n'
         f'        <label class="field">\n'
         f'          <span class="field-label">用户名</span>\n'
