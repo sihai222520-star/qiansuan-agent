@@ -1,3 +1,14 @@
+<!-- ============================================================
+     黔算智能体 (QianSuan Agent)
+     Community distribution of Nous Research's Hermes Agent
+     ============================================================ -->
+
+> **黔算智能体 (QianSuan Agent)** —— 基于 [Nous Research](https://nousresearch.com) 的 [Hermes Agent](https://github.com/NousResearch/hermes-agent)（MIT）二次开发的社区发行版：换品牌、默认中文、改造成「瘦客户端」（连接远程网关，本地不装运行时）。保留上游 MIT 许可与版权声明（见 [LICENSE](LICENSE)）。
+>
+> **QianSuan Agent** is a community distribution of [Hermes Agent](https://github.com/NousResearch/hermes-agent) (MIT) — rebranded, China-localized, and shipped as a light (remote-gateway) client, with upstream copyright retained.
+
+---
+
 <p align="center">
   <img src="assets/banner.png" alt="Hermes Agent" width="100%">
 </p>
