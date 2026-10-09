@@ -300,7 +300,8 @@ function shouldPreserveConfiguredOnBootRace(runtime: RuntimeReadinessResult, sta
 }
 
 function notifyReady(provider: string) {
-  notify({ kind: 'success', title: 'Hermes is ready', message: `${provider} connected.` })
+  // 黔算：成功 toast 中文化（上游原文 "Hermes is ready" / "${provider} connected."）。
+  notify({ kind: 'success', title: '黔算智能体已就绪', message: `${provider} 已连接。` })
 }
 
 // Human-friendly labels for tools auto-routed through the Nous Tool Gateway,
@@ -798,9 +799,9 @@ export async function refreshOnboarding(ctx: OnboardingContext, stillWanted?: ()
       notify({
         id: 'runtime-not-ready',
         kind: 'info',
-        title: 'Runtime not ready',
-        message:
-          'Hermes Desktop could not verify the running backend on startup. Some features may be unavailable until the gateway is reachable.'
+        // 黔算：中文化 + 去 Hermes 品牌（上游原文 "Runtime not ready" / "Hermes Desktop could not verify…"）。
+        title: '运行环境未就绪',
+        message: '黔算智能体启动时没能确认后端正在运行。在网关恢复可达之前，部分功能可能暂时无法使用。'
       })
     }
 
@@ -1169,7 +1170,8 @@ export async function saveOnboardingApiKey(
   } catch (error) {
     notifyError(error, `保存 ${label} 失败`)
 
-    return { ok: false, message: errMessage(error) }
+    // 黔算：异常原文多为英文，加中文前缀上屏（细节保留便于排查）。
+    return { ok: false, message: `保存时出错：${errMessage(error)}` }
   }
 }
 
@@ -1292,12 +1294,12 @@ export async function saveOnboardingLocalEndpoint(
     }
 
     if (!runtime.ready) {
-      const detail = (runtime.reason ?? '').trim()
-
-      return { ok: false, message: detail || `Saved, but Hermes still cannot reach ${resolvedUrl}.` }
+      // 黔算：中文化（上游原文 "Saved, but Hermes still cannot reach …"）。
+      // runtime.reason 多为英文技术细节，不直接上屏，避免英文漏出。
+      return { ok: false, message: `已保存，但黔算智能体暂时连不上 ${resolvedUrl}。请检查地址和网络后重试。` }
     }
 
-    notifyReady('Local / custom endpoint')
+    notifyReady('自定义 API（OpenAI 兼容）')
     completeDesktopOnboarding(true)
     ctx.onCompleted?.()
 
@@ -1305,7 +1307,8 @@ export async function saveOnboardingLocalEndpoint(
   } catch (error) {
     notifyError(error, '保存自定义 API 配置失败')
 
-    return { ok: false, message: errMessage(error) }
+    // 黔算：异常原文多为英文，加中文前缀上屏（细节保留便于排查）。
+    return { ok: false, message: `保存时出错：${errMessage(error)}` }
   }
 }
 

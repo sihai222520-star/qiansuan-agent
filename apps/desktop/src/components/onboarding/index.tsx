@@ -625,9 +625,10 @@ export function Picker({ ctx }: { ctx: OnboardingContext }) {
   const apiKeyOptions = useApiKeyCatalog(ctx.scope)
 
   // 黔算智能体：产品主线 = 自定义 API 直连中转站。首启与手动打开一律先渲染
-  // API key 表单，并默认选中"自定义 API"——不再把 OAuth 门户当首屏
-  // （原条件 `localEndpoint || mode === 'apikey' || !hasOauth`，OAuth 分支
-  // 代码保留在下方备用，经 onBack/mode 仍可到达）。
+  // API key 表单，并默认选中"自定义 API"——不再把 OAuth 门户当首屏。
+  // 注意：canGoBack={false} 使下方 OAuth 分支成为死代码（onBack 不会被渲染），
+  // OAuth 入口走设置页 / model-settings / 聊天内三条路径（异族审查 E 项核实）。
+  // 死分支暂保留待后续块清理。
   const qiansuanApiKeyFirst = true
 
   if (qiansuanApiKeyFirst || localEndpoint || mode === 'apikey' || !hasOauth) {

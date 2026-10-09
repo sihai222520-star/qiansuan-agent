@@ -695,7 +695,8 @@ describe('saveOnboardingLocalEndpoint', () => {
     expect(result.ok).toBe(false)
     // The wizard reads this discriminator to reveal a manual model-name input.
     expect(result.needsModelInput).toBe(true)
-    expect(result.message).toMatch(/didn't enumerate any models|advertised no models/)
+    // 黔算：失败文案已中文化（区分"连不上"与"没拉到模型"）。
+    expect(result.message).toMatch(/没有在 \/v1\/models 拉到模型列表/)
     // Must not attempt to persist an assignment without a model.
     expect(calls).not.toContain('/api/model/set')
   })
@@ -939,7 +940,9 @@ describe('saveOnboardingLocalEndpoint', () => {
     })
 
     expect(result.ok).toBe(false)
-    expect(result.message).toContain('No provider can serve the selected model.')
+    // 黔算：运行时未就绪的失败文案已中文化；英文技术细节（runtime.reason）
+    // 不再直出表单（异族审查 C 项），故此处断言中文文案而非英文 reason。
+    expect(result.message).toContain('已保存，但黔算智能体暂时连不上')
     expect($desktopOnboarding.get().configured).not.toBe(true)
   })
 })
