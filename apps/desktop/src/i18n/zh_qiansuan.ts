@@ -411,7 +411,14 @@ const overrides: TranslationOverride<Translations> =
   },
   onboarding: {
     tryAgain: "重试",
-    useApiKeyInstead: "使用 API 密钥"
+    useApiKeyInstead: "使用 API 密钥",
+    apiKeyOptions: {
+      local: {
+        short: "自定义 API（OpenAI 兼容）",
+        description: "填入中转站 API 地址和你的 API Key，点连接后会自动获取可用模型。"
+      }
+    },
+    localModelNamePlaceholder: "模型名称（例如 glm-5.3）"
   },
   preview: {
     missingTarget: "这个路径在本机上不存在"

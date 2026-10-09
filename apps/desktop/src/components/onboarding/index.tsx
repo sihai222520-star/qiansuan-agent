@@ -117,10 +117,12 @@ const API_KEY_OPTIONS: ApiKeyOption[] = [
   },
   {
     id: 'local',
-    name: 'Local / custom endpoint',
+    // 黔算智能体：产品主线 = 自定义 API 直连中转站，置顶并作首启默认项。
+    name: '自定义 API（OpenAI 兼容）',
     envKey: 'OPENAI_BASE_URL',
-    docsUrl: 'https://github.com/NousResearch/hermes-agent#bring-your-own-endpoint',
-    placeholder: 'http://127.0.0.1:8000/v1'
+    // 中转站注册页地址待产品方提供后填入；为空时隐藏"获取密钥"链接。
+    docsUrl: '',
+    placeholder: 'https://api.example.com/v1'
   }
 ]
 
@@ -622,16 +624,18 @@ export function Picker({ ctx }: { ctx: OnboardingContext }) {
   const hasOauth = ordered.length > 0
   const apiKeyOptions = useApiKeyCatalog(ctx.scope)
 
-  // localEndpoint forces the key form regardless of `mode` (which a manual
-  // provider refresh may flip back to 'oauth'); it preselects the local option
-  // and hides the "back to sign in" link since the user came specifically to
-  // configure a custom endpoint.
-  if (localEndpoint || mode === 'apikey' || !hasOauth) {
+  // 黔算智能体：产品主线 = 自定义 API 直连中转站。首启与手动打开一律先渲染
+  // API key 表单，并默认选中"自定义 API"——不再把 OAuth 门户当首屏
+  // （原条件 `localEndpoint || mode === 'apikey' || !hasOauth`，OAuth 分支
+  // 代码保留在下方备用，经 onBack/mode 仍可到达）。
+  const qiansuanApiKeyFirst = true
+
+  if (qiansuanApiKeyFirst || localEndpoint || mode === 'apikey' || !hasOauth) {
     return (
       <div className="grid gap-3">
         <ApiKeyForm
-          canGoBack={hasOauth && !localEndpoint}
-          initialEnvKey={localEndpoint ? 'OPENAI_BASE_URL' : apiKeyInitialEnv}
+          canGoBack={false}
+          initialEnvKey={localEndpoint || apiKeyInitialEnv === undefined ? 'OPENAI_BASE_URL' : apiKeyInitialEnv}
           onBack={() => setOnboardingMode('oauth')}
           onSave={(envKey, value, name, apiKey, modelName) =>
             saveOnboardingApiKey(envKey, value, name, ctx, apiKey, modelName)

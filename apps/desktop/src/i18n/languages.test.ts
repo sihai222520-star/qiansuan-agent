@@ -1,7 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { TRANSLATIONS } from './catalog'
 import { DEFAULT_LOCALE, isLocale, isSupportedLocaleValue, LOCALE_OPTIONS, normalizeLocale } from './languages'
+
+afterEach(() => {
+  vi.unstubAllEnvs()
+  vi.resetModules()
+})
 
 describe('desktop i18n languages', () => {
   it('normalizes supported locale aliases', () => {
@@ -68,5 +73,15 @@ describe('desktop i18n languages', () => {
     }
 
     expect(Object.keys(TRANSLATIONS).sort()).toEqual(LOCALE_OPTIONS.map(option => option.id).sort())
+  })
+
+  it('产品兜底语言是中文（非 test 构建下 DEFAULT_LOCALE = zh）', async () => {
+    // languages.ts 在 vitest（MODE==='test'）下钉 'en'，保住上游英文断言；
+    // 这里重评模块证明真实产品构建的兜底确实落在中文——这是"界面全英文"
+    // 问题的根修，必须有专测看住。
+    vi.stubEnv('MODE', 'production')
+    vi.resetModules()
+    const mod = await import('./languages')
+    expect(mod.DEFAULT_LOCALE).toBe('zh')
   })
 })

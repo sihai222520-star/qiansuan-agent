@@ -55,6 +55,18 @@ const translatedByUpstream = [...zhLeaves.keys()].filter(key => {
   return zhValue !== enValue && typeof zhValue === 'string' && zhValue.trim() !== ''
 })
 
+/**
+ * 产品文案改写键：上游**已有中文**，但为去品牌/中转站产品语义**有意改写**
+ * （不是补缺）。这是"只填空缺"不变量的唯一合法例外：
+ * - 每个键仍受其余全部不变量约束（存在性/非空/非英文/无品牌/形状/英文指纹）；
+ * - 改这里任何一条文案，都必须同步 `_qiansuan-english-baseline.ts` 的指纹。
+ */
+const COPY_REFINEMENT_KEYS = new Set<string>([
+  'onboarding.apiKeyOptions.local.short',
+  'onboarding.apiKeyOptions.local.description',
+  'onboarding.localModelNamePlaceholder'
+])
+
 /** 允许保持纯英文的值（技术标识，不是说给用户听的话）。 */
 const TECHNICAL_ALLOWLIST = new Set<string>([
   'Ctrl+K',
@@ -77,9 +89,12 @@ const TECHNICAL_SHAPE =
 
 const isMostlyEnglish = (value: string): boolean => {
   const trimmed = value.trim()
-  if (TECHNICAL_ALLOWLIST.has(trimmed)) return false
-  if (TECHNICAL_SHAPE.test(trimmed)) return false
-  if (/[\u4e00-\u9fff]/.test(trimmed)) return false
+
+  if (TECHNICAL_ALLOWLIST.has(trimmed)) {return false}
+
+  if (TECHNICAL_SHAPE.test(trimmed)) {return false}
+
+  if (/[\u4e00-\u9fff]/.test(trimmed)) {return false}
   // 三个及以上拉丁词、且一个汉字都没有 → 基本可以断定没翻
   const words = trimmed.split(/\s+/).filter(w => /[A-Za-z]{2,}/.test(w))
 
@@ -94,6 +109,8 @@ describe('黔算智能体 中文覆写层', () => {
 
   it('**只填空缺**：每个被覆写的键，上游原本都回落到英文（P-03 陷阱的正向证明）', () => {
     const overwroteRealChinese = overriddenKeys.filter(key => {
+      // 产品文案改写键是登记在册的例外（见 COPY_REFINEMENT_KEYS 注释）
+      if (COPY_REFINEMENT_KEYS.has(key)) {return false}
       const zhValue = zhLeaves.get(key)
       const enValue = enLeaves.get(key)
 
@@ -105,9 +122,9 @@ describe('黔算智能体 中文覆写层', () => {
   })
 
   it('**没碰过的键必须还是中文**：抽样证明深合并没有波及别处', () => {
-    // 取上游已翻好的键，检查合并后逐一不变
+    // 取上游已翻好的键，检查合并后逐一不变（文案改写键除外——它们本就是要改的）
     const disturbed = translatedByUpstream.filter(
-      key => mergedLeaves.get(key) !== zhLeaves.get(key)
+      key => !COPY_REFINEMENT_KEYS.has(key) && mergedLeaves.get(key) !== zhLeaves.get(key)
     )
 
     expect(disturbed).toEqual([])
@@ -146,6 +163,7 @@ describe('黔算智能体 中文覆写层', () => {
     // （实测：`boot.updateHold.recoveryHint` 教用户在任务管理器里结束残留的 `git` / `hermes`
     //  进程——那是进程名，不是品牌，合理保留）。
     const allowed = /(~\/\.hermes|\.hermes|hermes\.|NOUS_INFERENCE|HERMES_[A-Z_]+|hermes-cli|qiansuan|结束残留的 git 或 hermes 进程|hermes 进程)/i
+
     const branded = overriddenKeys.filter(key => {
       const value = mergedLeaves.get(key)
 
@@ -157,14 +175,19 @@ describe('黔算智能体 中文覆写层', () => {
 
   it('键的形状没被改动（值仍是与上游同类的叶子）', () => {
     const kindOf = (value: Leaf): string => {
-      if (typeof value === 'function') return 'function'
-      if (Array.isArray(value)) return 'array'
-      if (typeof value === 'string') return 'string'
-      if (value === null) return 'null'
-      if (typeof value === 'object') return 'object'
+      if (typeof value === 'function') {return 'function'}
+
+      if (Array.isArray(value)) {return 'array'}
+
+      if (typeof value === 'string') {return 'string'}
+
+      if (value === null) {return 'null'}
+
+      if (typeof value === 'object') {return 'object'}
 
       return typeof value
     }
+
     const mismatched = overriddenKeys
       .filter(key => kindOf(mergedLeaves.get(key)) !== kindOf(enLeaves.get(key)))
       .map(key => `${key}: ${kindOf(enLeaves.get(key))} → ${kindOf(mergedLeaves.get(key))}`)
@@ -182,14 +205,19 @@ describe('黔算智能体 中文覆写层', () => {
 
     for (const key of overriddenKeys) {
       const expected = englishBaseline[key]
+
       if (expected === undefined) {
         missingBaseline.push(key)
+
         continue
       }
+
       const current = enLeaves.get(key)
-      if (typeof current !== 'string') continue
+
+      if (typeof current !== 'string') {continue}
       const digest = createHash('sha256').update(current, 'utf8').digest('hex').slice(0, 16)
-      if (digest !== expected) drifted.push(key)
+
+      if (digest !== expected) {drifted.push(key)}
     }
 
     // 指纹缺失说明基线没跟上覆写（构建流程被绕过）

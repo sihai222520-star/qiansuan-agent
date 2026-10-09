@@ -254,6 +254,11 @@ export const englishBaseline: Record<string, string> = {
   "notifications.errors.restartHermesFailed": "27aed8e0e0358277",
   "notifications.errors.rpcOutOfSync": "9d3dcefdd0e28c19",
   "notifications.errors.storageFailure": "df889abe470ca71c",
+  // 黔算：以下三条是「产品文案改写」键（上游已有中文，为去品牌/中转站语义有意改写），
+  // 由手补指纹（qiansuan/scripts/build-zh-overlay.py 生成器不在仓库内）。
+  "onboarding.apiKeyOptions.local.description": "56b874551380b9e6",
+  "onboarding.apiKeyOptions.local.short": "4ff74fee4b291f59",
+  "onboarding.localModelNamePlaceholder": "271c3cb94d8243b0",
   "onboarding.tryAgain": "d8b8392e2c542950",
   "onboarding.useApiKeyInstead": "d0490d0465c688f0",
   "preview.missingTarget": "22479182e0f7b0fd",

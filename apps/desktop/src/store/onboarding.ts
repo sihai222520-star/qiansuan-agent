@@ -1132,7 +1132,7 @@ export async function saveOnboardingApiKey(
   const trimmed = value.trim()
 
   if (!trimmed) {
-    return { ok: false, message: 'Enter a value first.' }
+    return { ok: false, message: '请先填写内容。' }
   }
 
   // The "Local / custom endpoint" option carries a base URL (in `value`) plus
@@ -1167,7 +1167,7 @@ export async function saveOnboardingApiKey(
 
     return { ok: true }
   } catch (error) {
-    notifyError(error, `Could not save ${label}`)
+    notifyError(error, `保存 ${label} 失败`)
 
     return { ok: false, message: errMessage(error) }
   }
@@ -1215,7 +1215,7 @@ export async function saveOnboardingLocalEndpoint(
   const manualModel = modelName?.trim() ?? ''
 
   if (!url) {
-    return { ok: false, message: 'Enter the endpoint URL first.' }
+    return { ok: false, message: '请先填写 API 地址。' }
   }
 
   // Probe connectivity + discover the served models. Any HTTP response proves
@@ -1235,17 +1235,21 @@ export async function saveOnboardingLocalEndpoint(
     }
 
     if (!probe.ok && probe.reachable) {
-      return { ok: false, message: probe.message || 'Could not reach that endpoint.' }
+      // 端点应答但校验被拒：多为 key 无效，或地址没有以 /v1 结尾。
+      return {
+        ok: false,
+        message: 'API 地址能连通，但密钥校验未通过。请检查 API Key 是否正确、地址是否以 /v1 结尾。'
+      }
     }
 
     if (!probe.reachable) {
-      return { ok: false, message: probe.message || `Could not reach ${url}.` }
+      return { ok: false, message: `连不上 ${url}，请检查地址和网络后重试。` }
     }
 
     model = (probe.models?.[0] ?? '').trim()
     resolvedUrl = probe.resolved_base_url?.trim() || url
   } catch {
-    return { ok: false, message: `Could not reach ${url}.` }
+    return { ok: false, message: `连不上 ${url}，请检查地址和网络后重试。` }
   }
 
   // Prefer the user-supplied model name when present; fall back to discovery.
@@ -1262,7 +1266,7 @@ export async function saveOnboardingLocalEndpoint(
     return {
       ok: false,
       needsModelInput: true,
-      message: `Connected to ${url}, but it didn't enumerate any models at /v1/models. Enter a model name below (e.g. command-a-plus-05-2026) to continue.`
+      message: `已连上 ${url}，但没有在 /v1/models 拉到模型列表。请在下方填写模型名（例如 glm-5.3）继续。`
     }
   }
 
@@ -1299,7 +1303,7 @@ export async function saveOnboardingLocalEndpoint(
 
     return { ok: true }
   } catch (error) {
-    notifyError(error, 'Could not save local endpoint')
+    notifyError(error, '保存自定义 API 配置失败')
 
     return { ok: false, message: errMessage(error) }
   }

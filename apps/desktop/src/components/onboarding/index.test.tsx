@@ -48,41 +48,23 @@ afterEach(() => {
 })
 
 describe('onboarding Picker', () => {
-  it('features Nous Portal and hides other providers behind a disclosure', () => {
-    setProviders([makeOAuthProvider('anthropic', 'Anthropic Claude'), makeOAuthProvider('nous', 'Nous Portal')])
+  // 黔算产品主线：首启不再先出 OAuth 门户，直接渲染 API key 表单，
+  // 且默认选中"自定义 API"卡片（中转站直连）。
+  it('lands directly on the custom-API key form with the custom endpoint preselected', () => {
+    setProviders([makeOAuthProvider('nous', 'Nous Portal'), makeOAuthProvider('anthropic', 'Anthropic Claude')])
     render(<Picker ctx={ctx} />)
 
-    expect(screen.getByText('Nous Portal')).toBeTruthy()
-    expect(screen.getByText('Recommended')).toBeTruthy()
-    // Fireworks stays behind the disclosure with the other alternatives; only
-    // Nous Portal is visible before the user expands the list.
-    expect(screen.queryByText('Fireworks AI')).toBeNull()
-    expect(screen.queryByText('Anthropic Account')).toBeNull()
-
-    fireEvent.click(screen.getByRole('button', { name: 'Other providers' }))
-
-    expect(screen.getByText('Fireworks AI')).toBeTruthy()
-    expect(screen.getByText('Anthropic Account')).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Collapse' })).toBeTruthy()
-  })
-
-  it('shows every provider directly when Nous Portal is absent', () => {
-    setProviders([
-      makeOAuthProvider('anthropic', 'Anthropic Claude'),
-      makeOAuthProvider('openai-codex', 'OpenAI Codex / ChatGPT')
-    ])
-    render(<Picker ctx={ctx} />)
-
-    expect(screen.getByText('Fireworks AI')).toBeTruthy()
-    expect(screen.getByText('Anthropic Account')).toBeTruthy()
-    expect(screen.getByText('ChatGPT or Codex Subscription')).toBeTruthy()
-    expect(screen.queryByText('Other sign-in options')).toBeNull()
+    expect(screen.getByText('自定义 API（OpenAI 兼容）')).toBeTruthy()
+    expect(screen.queryByText('Nous Portal')).toBeNull()
     expect(screen.queryByText('Recommended')).toBeNull()
   })
 
-  it('offers "choose later" on first run and persists the skip', () => {
+  it('still lists the other key options and offers "choose later" on first run', () => {
     setProviders([makeOAuthProvider('nous', 'Nous Portal')])
     render(<Picker ctx={ctx} />)
+
+    expect(screen.getByText('Fireworks AI')).toBeTruthy()
+    expect(screen.getByText('OpenRouter')).toBeTruthy()
 
     const skip = screen.getByRole('button', { name: "I'll choose a provider later" })
 
@@ -125,7 +107,7 @@ describe('ApiKeyForm manual local-model fallback', () => {
 
     render(<ApiKeyForm canGoBack={false} initialEnvKey="OPENAI_BASE_URL" onBack={() => undefined} onSave={onSave} />)
 
-    fireEvent.change(screen.getByPlaceholderText('http://127.0.0.1:8000/v1'), {
+    fireEvent.change(screen.getByPlaceholderText('https://api.example.com/v1'), {
       target: { value: 'https://api.cohere.ai/compatibility/v1' }
     })
 
@@ -148,7 +130,7 @@ describe('ApiKeyForm manual local-model fallback', () => {
       expect(onSave).toHaveBeenLastCalledWith(
         'OPENAI_BASE_URL',
         'https://api.cohere.ai/compatibility/v1',
-        'Local / custom endpoint',
+        '自定义 API（OpenAI 兼容）',
         '',
         'command-a-plus-05-2026'
       )

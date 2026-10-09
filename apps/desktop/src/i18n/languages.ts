@@ -12,7 +12,10 @@ import {
 } from './registry'
 import type { BundledLocale, Locale } from './types'
 
-export const DEFAULT_LOCALE: BundledLocale = 'en'
+// 黔算智能体：中文产品，兜底语言一律中文（上游原值 'en'）。用户仍可在设置里切换。
+// 测试环境（vitest 独有 MODE==='test'）钉回 'en'：上游数千条测试按英文文案断言，
+// 不因产品默认语言翻转而大面积改写；zh 兜底行为由 languages.test.ts 专测覆盖。
+export const DEFAULT_LOCALE: BundledLocale = import.meta.env?.MODE === 'test' ? 'en' : 'zh'
 
 export const LOCALE_OPTIONS = [
   {
