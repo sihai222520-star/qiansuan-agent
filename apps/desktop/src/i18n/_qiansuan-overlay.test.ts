@@ -46,15 +46,6 @@ const overriddenKeys = [...mergedLeaves.keys()].filter(
   key => mergedLeaves.get(key) !== zhLeaves.get(key)
 )
 
-/** 上游已经翻好的键（zh 与 en 不同 = 有人翻过）。 */
-const translatedByUpstream = [...zhLeaves.keys()].filter(key => {
-  const zhValue = zhLeaves.get(key)
-  const enValue = enLeaves.get(key)
-
-  // 函数型条目在 zh 里可能本来就是同一个引用（没翻），那不算"已翻"
-  return zhValue !== enValue && typeof zhValue === 'string' && zhValue.trim() !== ''
-})
-
 /**
  * 产品文案改写键：上游**已有中文**，但为去品牌/中转站产品语义**有意改写**
  * （不是补缺）。这是"只填空缺"不变量的唯一合法例外：
@@ -101,6 +92,22 @@ const isMostlyEnglish = (value: string): boolean => {
   return words.length >= 3
 }
 
+/** 上游已经翻好的键（zh 与 en 不同 = 有人翻过；英文形态的占位不算）。 */
+const translatedByUpstream = [...zhLeaves.keys()].filter(key => {
+  const zhValue = zhLeaves.get(key)
+  const enValue = enLeaves.get(key)
+
+  // 函数型条目在 zh 里可能本来就是同一个引用（没翻），那不算"已翻"
+  if (!(zhValue !== enValue && typeof zhValue === 'string' && zhValue.trim() !== '')) {return false}
+
+  // 黔算更正：zh 值本身是英文形态的（上游漏翻留下的英文占位）**不算"已翻好"**——
+  // 覆写它们是合法的补缺，不是覆盖别人的中文。真中文（含汉字）才受"没碰过"保护。
+  if (isMostlyEnglish(zhValue)) {return false}
+
+  return true
+})
+
+
 describe('黔算智能体 中文覆写层', () => {
   it('覆写层确实填了量级正确的缺口（防止整体被误删）', () => {
     // 实测缺口 286 条；留出余量，但绝不允许"一片空白也算通过"
@@ -109,12 +116,17 @@ describe('黔算智能体 中文覆写层', () => {
 
   it('**只填空缺**：每个被覆写的键，上游原本都回落到英文（P-03 陷阱的正向证明）', () => {
     const overwroteRealChinese = overriddenKeys.filter(key => {
-      // 产品文案改写键是登记在册的例外（见 COPY_REFINEMENT_KEYS 注释）
+      // 例外①：产品文案改写键（登记在册，见 COPY_REFINEMENT_KEYS 注释）。
       if (COPY_REFINEMENT_KEYS.has(key)) {return false}
+
       const zhValue = zhLeaves.get(key)
       const enValue = enLeaves.get(key)
 
-      // 上游已经翻过（zh 与 en 不同）却仍被我们覆盖 → 就是踩了陷阱
+      // 例外②：上游 zh 值本身是英文形态的（漏翻缺口），覆写它属于补缺
+      // 而非覆盖真中文。
+      if (typeof zhValue === 'string' && isMostlyEnglish(zhValue)) {return false}
+
+      // 上游已经翻过（zh 与 en 不同）却仍被我们覆盖 → 就是踩了陷阱。
       return zhValue !== enValue && zhValue !== undefined
     })
 

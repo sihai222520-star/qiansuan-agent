@@ -256,6 +256,7 @@ export const englishBaseline: Record<string, string> = {
   "notifications.errors.storageFailure": "df889abe470ca71c",
   // 黔算：以下三条是「产品文案改写」键（上游已有中文，为去品牌/中转站语义有意改写），
   // 由手补指纹（qiansuan/scripts/build-zh-overlay.py 生成器不在仓库内）。
+  "boot.errors.gatewayConnectionLostDetail": "f4eb8bbda79e695a",
   "onboarding.apiKeyOptions.local.description": "56b874551380b9e6",
   "onboarding.apiKeyOptions.local.short": "4ff74fee4b291f59",
   "onboarding.localModelNamePlaceholder": "271c3cb94d8243b0",

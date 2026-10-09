@@ -127,6 +127,7 @@ const overrides: TranslationOverride<Translations> =
     errors: {
       connectionSettings: "连接设置",
       gatewaySignInRequiredDetail: "重新登录后即可恢复连接，你的聊天记录和设置都还在。",
+      gatewayConnectionLostDetail: "后台会继续自动重试。你可以照常阅读和输入——如果一直连不上，请打开网关设置检查。",
       openLogs: "查看日志",
       reconnectNow: "立即重连",
       restartHermes: "重启应用",
