@@ -155,8 +155,7 @@ export function ConnectorPicks({ catalog, commit, done, locked, plugins }: Conne
         </>
       )}
       <p className="text-xs text-muted-foreground">
-        <strong className="font-medium text-foreground">Nothing connects or installs yet.</strong> Hermes will offer to
-        link these, or install a plugin, when a task needs them, and asks first.
+        <strong className="font-medium text-foreground">现在什么都不会连接或安装。</strong>当任务需要时，黔算智能体会先征求你的同意，再提出连接这些服务或安装插件。
       </p>
     </CardFrame>
   )

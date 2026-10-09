@@ -214,7 +214,7 @@ export function PetTab({ image, onImage }: PetTabProps) {
         </Button>
       ) : null}
       {filtered.length === 0 ? (
-        <div className="py-3 text-center text-xs text-(--ui-text-quaternary)">No pets match.</div>
+        <div className="py-3 text-center text-xs text-(--ui-text-quaternary)">没有匹配的宠物。</div>
       ) : (
         <div
           className="overflow-y-auto"

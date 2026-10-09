@@ -17,22 +17,18 @@ export function GenerateUnavailable({ onSetup }: GenerateUnavailableProps) {
       </span>
       <div className="space-y-1.5">
         <p className="text-[length:var(--conversation-text-font-size)] font-semibold">
-          Add an image backend to generate
+          先配置一个能生成图片的模型
         </p>
         <p className="mx-auto max-w-[19rem] text-[length:var(--conversation-caption-font-size)] leading-relaxed text-(--ui-text-tertiary)">
-          Hatching a custom pet needs a provider that can ground on a reference image.
+          孵化专属宠物需要一个支持参考图的图像模型。
         </p>
       </div>
       <Button onClick={onSetup} size="sm">
         <Settings2 className="size-4" />
-        Set up image generation
+        去配置图像生成
       </Button>
       <p className="flex flex-wrap items-center justify-center gap-x-1.5 text-[0.6875rem] text-(--ui-text-tertiary)">
-        <span>Grab a key from</span>
-        <ExternalLink href="https://portal.nousresearch.com" showExternalIcon={false}>
-          Nous Portal
-        </ExternalLink>
-        <span>·</span>
+        <span>没有 API Key？去这里创建：</span>
         <ExternalLink
           className="opacity-40 transition-opacity hover:opacity-100"
           href="https://openrouter.ai/keys"

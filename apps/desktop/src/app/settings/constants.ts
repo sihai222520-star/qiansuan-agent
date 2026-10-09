@@ -47,8 +47,8 @@ export const CONTROL_TEXT = 'text-xs'
 export const PROVIDER_GROUPS: ProviderPrefix[] = [
   {
     prefix: 'NOUS_',
-    name: 'Nous Portal',
-    description: 'Hosted Hermes & Nous-trained models',
+    name: 'Nous 接口',
+    description: 'Nous 官方托管模型接口',
     docsUrl: 'https://portal.nousresearch.com',
     priority: 0
   },
