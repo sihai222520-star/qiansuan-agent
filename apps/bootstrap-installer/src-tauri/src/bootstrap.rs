@@ -610,7 +610,12 @@ async fn run_bootstrap(
     // it. The per-stage call below also passes -IncludeDesktop to keep
     // the contracts identical.
     let manifest_args = build_pin_args(&script);
-    let mut manifest_args_full = vec!["-Manifest".to_string()];
+    // 黔算：manifest 调用必须带 -Json——PS 5.1 在 -Json 下整程 UTF-8 输出
+    // （install.ps1 序言）。不带时 manifest 中文标题按控制台代码页（中文
+    // Windows=CP936/GBK）输出，decode_console_bytes 的 UTF-8 优先解码失败、
+    // 落 CP1252 兜底 → 安装器进度界面标题乱码（真机 2026-10-09 实测）。
+    // manifest 分支打印后即 exit 0，-Json 在此无事件帧等副作用。
+    let mut manifest_args_full = vec!["-Manifest".to_string(), "-Json".to_string()];
     manifest_args_full.extend(manifest_args.clone());
     if args.include_desktop {
         manifest_args_full.push("-IncludeDesktop".to_string());
