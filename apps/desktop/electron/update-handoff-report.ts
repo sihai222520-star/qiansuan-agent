@@ -65,9 +65,9 @@ export function reportHandoffResult(host: HandoffReportHost): void {
       host.log(`[updates] detached update finished with warnings: ${result.warnings.join(' | ')}`)
       void host.dialog.showMessageBox({
         type: 'info',
-        title: 'Hermes update',
-        message: 'Hermes updated, but some follow-up steps need another try',
-        detail: `${result.warnings.join('\n')}\n\nHermes retries them on the next launch or the next update.`
+        title: '黔算智能体更新',
+        message: '黔算智能体已更新，但有几个收尾步骤需要再试一次',
+        detail: `${result.warnings.join('\n')}\n\n黔算智能体会在下次启动或下次更新时自动重试。`
       })
     } else if (result && result.ok && result.manual) {
       // Update landed but the user must act (reopen/reinstall/sandbox). On
@@ -76,8 +76,8 @@ export function reportHandoffResult(host: HandoffReportHost): void {
       host.log(`[updates] detached update finished with manual action (branch ${result.branch}): ${result.message}`)
       host.dialog.showMessageBox({
         type: 'warning',
-        title: 'Hermes update',
-        message: 'The update finished, but needs one more step',
+        title: '黔算智能体更新',
+        message: '更新已完成，还差最后一步',
         detail: result.message
       })
     } else if (result && result.ok) {
@@ -92,12 +92,12 @@ export function reportHandoffResult(host: HandoffReportHost): void {
       void host.dialog
         .showMessageBox({
           type: 'error',
-          title: 'Hermes update',
-          message: "Hermes couldn't finish updating",
+          title: '黔算智能体更新',
+          message: '黔算智能体没能完成更新',
           detail:
-            "You're still on the previous version and can keep using it. Try the update again, or open the update log to report the problem.\n\n" +
-            `Details: ${result.message}`,
-          buttons: ['Try again', 'Open log', 'Close'],
+            '你现在仍是旧版本，可以继续使用。可以再试一次更新，或打开更新日志查看问题。\n\n' +
+            `详细信息：${result.message}`,
+          buttons: ['再试一次', '打开日志', '关闭'],
           defaultId: 0,
           cancelId: 2,
           noLink: true

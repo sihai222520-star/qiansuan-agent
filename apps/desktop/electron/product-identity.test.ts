@@ -92,8 +92,10 @@ test('nonstable runtime pins userData before the app name can change', async ():
   const canary: ProductIdentity = await identityForVariant('bundled')
   const runtime: { applyDesktopIdentity: typeof applyDesktopIdentity } = await import('./product-identity')
   const root: string = fs.mkdtempSync(path.join(os.tmpdir(), 'identity-userdata-'))
-  const paths: Record<string, string> = { appData: root, userData: path.join(root, 'Hermes') }
-  let name: string = 'Hermes'
+  // fixture 初始态模拟打包后的默认（package.json productName='QianSuan'，
+  // 异族审查 fdff 指出旧值 'Hermes' 与真实默认脱节）
+  const paths: Record<string, string> = { appData: root, userData: path.join(root, 'QianSuan') }
+  let name: string = 'QianSuan'
 
   const app: Parameters<typeof applyDesktopIdentity>[0] = {
     getPath: (key: string): string => paths[key],
@@ -108,7 +110,7 @@ test('nonstable runtime pins userData before the app name can change', async ():
 
   try {
     assert.equal(runtime.applyDesktopIdentity(app, stable), null)
-    assert.equal(paths.userData, path.join(root, 'Hermes'))
+    assert.equal(paths.userData, path.join(root, 'QianSuan'))
     assert.equal(runtime.applyDesktopIdentity(app, canary), canary.displayName)
     assert.equal(paths.userData, path.join(paths.appData, canary.appNamePascal))
     assert.equal(name, canary.displayName)
@@ -197,6 +199,22 @@ test('light and bundled retain distinct OS markers from the full client', async 
       assert.notEqual(other.msixAppIdWithOrg, full.msixAppIdWithOrg)
       assert.notEqual(other.channel, full.channel)
     }
+  }
+
+  // 黔算（异族审查 5085/fdff 指出）：bundled 与 light 也必须互异——两者都是
+  // 我们自己的变体，身份撞车会让两套安装互相覆盖 userData / 单实例锁。
+  const bundled: ProductIdentity = await identityForVariant('bundled')
+  const light: ProductIdentity = await identityForVariant('light')
+
+  for (const field of [
+    'displayName',
+    'appId',
+    'appNamePascal',
+    'msixAppIdWithOrg',
+    'windowsExecutableName',
+    'cliName'
+  ] as const) {
+    assert.notEqual(bundled[field], light[field], `bundled 与 light 的 ${field} 必须互异`)
   }
 })
 

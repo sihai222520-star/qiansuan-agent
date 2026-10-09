@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { DesktopBootstrapEvent, DesktopBootstrapState } from '@/global'
 
-import { DesktopInstallOverlay } from './desktop-install-overlay'
+import { DesktopInstallOverlay, splitFailureDetails } from './desktop-install-overlay'
 
 function bootstrapState(overrides: Partial<DesktopBootstrapState> = {}): DesktopBootstrapState {
   return {
@@ -606,3 +606,35 @@ it.each([
     }
   }
 )
+
+// 黔算（异族审查 fdff 指出分割器零测试覆盖）：bootstrap 失败文案已中文化，
+// 分割器必须同时认中文「详细信息：」与旧英文 "Details:"（上游其余消息仍用后者）。
+describe('splitFailureDetails（失败文案 lead/明细分割）', () => {
+  it('认中文标记：详细信息：', () => {
+    const [lead, detail] = splitFailureDetails(
+      '安装黔算智能体在「Python 虚拟环境」这一步中断了。 常见原因：没有联网……\n详细信息：venv failed with exit code 1'
+    )
+
+    expect(lead).toBe('安装黔算智能体在「Python 虚拟环境」这一步中断了。 常见原因：没有联网……')
+    expect(detail).toBe('venv failed with exit code 1')
+  })
+
+  it('认旧英文标记：Details:（上游/更新器消息兼容）', () => {
+    const [lead, detail] = splitFailureDetails('lead sentence\n\nDetails: raw error text')
+
+    expect(lead).toBe('lead sentence')
+    expect(detail).toBe('raw error text')
+  })
+
+  it('无标记时整段当 lead，明细为 null', () => {
+    const [lead, detail] = splitFailureDetails('只是一句话，没有明细')
+
+    expect(lead).toBe('只是一句话，没有明细')
+    expect(detail).toBeNull()
+  })
+
+  it('空值/Null 安全', () => {
+    expect(splitFailureDetails(null)).toEqual(['', null])
+    expect(splitFailureDetails('   ')).toEqual(['', null])
+  })
+})
