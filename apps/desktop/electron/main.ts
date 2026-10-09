@@ -15068,11 +15068,17 @@ function closeQuickEntryWindow() {
 function createWindow() {
   const icon = getAppIconPath()
   const savedWindowState = readWindowState()
+  // 黔算 DEV-ONLY 无头验收钩子（本地补丁，不入库）：QS_OFFSCREEN_SHOT=<dir>
+  // 时窗口离屏创建、定时 capturePage 连拍后退出——用于远程真机截图验收，
+  // 不打扰桌面会话。
+  const offscreenShotDir = process.env.QS_OFFSCREEN_SHOT
   mainWindow = new BrowserWindow({
-    ...computeWindowOptions(
-      savedWindowState ?? firstLaunchSize(screen.getPrimaryDisplay().workArea),
-      screen.getAllDisplays()
-    ),
+    ...(offscreenShotDir
+      ? { width: 1440, height: 900 }
+      : computeWindowOptions(
+          savedWindowState ?? firstLaunchSize(screen.getPrimaryDisplay().workArea),
+          screen.getAllDisplays()
+        )),
     minWidth: WINDOW_MIN_WIDTH,
     minHeight: WINDOW_MIN_HEIGHT,
     title: '黔算智能体',
@@ -15096,10 +15102,29 @@ function createWindow() {
     // live answer keeps painting while the window is blurred or minimized,
     // without pinning visibilityState to 'visible' at idle. See
     // session-windows.ts and stream-throttle.ts.
-    webPreferences: chatWindowWebPreferences(PRELOAD_PATH)
+    webPreferences: {
+      ...chatWindowWebPreferences(PRELOAD_PATH),
+      ...(offscreenShotDir ? { offscreen: true } : {})
+    }
   })
 
   const createdMainWindow = mainWindow
+
+  if (offscreenShotDir) {
+    const delays = [12000, 26000, 45000, 70000]
+    for (const delay of delays) {
+      setTimeout(() => {
+        const win = mainWindow
+        if (!win || win.isDestroyed()) return
+        win.webContents.capturePage().then(img => {
+          void import('node:fs').then(fs => {
+            try { fs.writeFileSync(offscreenShotDir + '\\shot-' + delay + '.png', img.toPNG()) } catch {}
+          }).catch(() => {})
+        }).catch(() => {})
+      }, delay)
+    }
+    setTimeout(() => { app.quit() }, 80000)
+  }
   minimizeToTray.registerWindow(createdMainWindow, { closeToTray: true })
   registerChatWindow(createdMainWindow)
   const defaultRoute = desktopProfilePreferences.getDefault()
