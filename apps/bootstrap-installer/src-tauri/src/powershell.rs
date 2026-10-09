@@ -497,7 +497,11 @@ pub fn parse_stage_result(stdout: &str) -> Option<crate::events::StageResultPayl
 /// array). Returns the parsed manifest.
 pub fn parse_manifest(stdout: &str) -> Option<crate::events::Manifest> {
     for line in stdout.lines().rev() {
-        let trimmed = line.trim();
+        // 黔算：防御性剥 U+FEFF——若上游把 UTF8Encoding($false) 误改回带 BOM
+        // 的 [Text.Encoding]::UTF8，流首 BOM 会落在首行 trim() 剥不掉的位置
+        // （\u{feff} 不在 char::is_whitespace 内），整个 manifest 解析会失败
+        // （异族审查 23 号文）。
+        let trimmed = line.trim().trim_start_matches('\u{feff}').trim();
         if trimmed.is_empty() {
             continue;
         }

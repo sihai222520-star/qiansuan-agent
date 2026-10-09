@@ -385,14 +385,18 @@ interface FakeStage {
   title: string
 }
 
+// 黔算：与 install.ps1 manifest 的真实 9 阶段对齐（原 7 项沿旧 electron
+// 清单，title 挂错 name，误导开发者预览——异族审查 23 号文）。
 const FAKE_INSTALL_STAGES: FakeStage[] = [
-  { name: 'system-packages', title: '系统前置组件' },
-  { name: 'uv', title: 'uv' },
-  { name: 'python', title: 'Python 环境' },
-  { name: 'repo', title: '下载黔算智能体' },
-  { name: 'dependencies', title: 'Python 依赖' },
-  { name: 'node', title: 'Node 运行时' },
-  { name: 'desktop', title: '桌面应用' }
+  { name: 'prerequisites', title: '系统前置组件' },
+  { name: 'repository', title: '下载黔算智能体' },
+  { name: 'venv', title: '创建 Python 环境' },
+  { name: 'python-deps', title: '安装 Python 依赖' },
+  { name: 'config', title: '准备配置与技能' },
+  { name: 'products', title: '安装命令行与后端' },
+  { name: 'setup', title: '配置 API 密钥与设置' },
+  { name: 'gateway', title: '配置网关服务' },
+  { name: 'complete', title: '完成安装' }
 ]
 
 const FAKE_UPDATE_STAGES: FakeStage[] = [

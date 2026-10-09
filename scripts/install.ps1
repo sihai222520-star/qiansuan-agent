@@ -1,4 +1,4 @@
-# Hermes Agent bootstrap: git checkout + venv + hermes command on PATH.
+﻿# Hermes Agent bootstrap: git checkout + venv + hermes command on PATH.
 # Heavy dependencies (tool binaries, browsers, node) are pm's job after
 # this: `hermes pm install`. Stage protocol kept for Hermes-Setup:
 #   -Manifest             print the stage list as JSON
@@ -62,6 +62,12 @@ $script:IsDotSourced = $MyInvocation.InvocationName -eq '.'
 # PowerShell 5.1 默认按控制台代码页编码 stdout（中文 Windows=CP936），
 # 中文阶段标题会变乱码；Rust 侧 decode_console_bytes 优先按 UTF-8 解。
 # 副作用是正向的：uv/git 等 UTF-8 产出的原生输出也因此被正确解码。
+# 【勿改】必须用 UTF8Encoding($false)（无 BOM preamble）——若换成
+# [Text.Encoding]::UTF8，流首会带 EF BB BF，Rust parse 不剥 U+FEFF，
+# manifest JSON 解析整体失败（异族审查 23 号文）。
+# 【勿删】本文件必须存为 UTF-8 with BOM：安装器用 powershell.exe 5.1
+# -File 执行，无 BOM 时 5.1 按 ANSI(CP936) 解读源码，中文标题在 parse
+# 阶段即乱码（OutputEncoding 只管输出，救不了源码误读）。
 if ($Json -and -not $script:IsDotSourced) {
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 }
