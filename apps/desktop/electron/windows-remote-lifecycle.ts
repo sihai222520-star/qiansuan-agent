@@ -188,7 +188,7 @@ async function assertWindowsRemoteInstallUpdateClear(ssh, hermesHome, python = '
     // CLEAR gate into a fail-closed 'update-in-progress' verdict.
     observation = stripPowerShellNoise(await ssh.exec(windowsUpdateMarkerProbeCommand(hermesHome, python))).pop() || ''
   } catch (cause) {
-    const error: any = new Error('Could not prove that the remote Hermes install is clear for SSH startup.')
+    const error: any = new Error('无法确认远程后端安装可以安全地进行 SSH 启动。')
     error.kind = 'update-in-progress'
     error.cause = cause
     throw error
@@ -613,7 +613,7 @@ async function connectWindowsRemote(deps) {
   const inspection = await helper(ssh, runtime, 'inspect', [runtime.hermesPath])
 
   if (!inspection.supported) {
-    const error: any = new Error('Update Hermes on the remote Windows host before connecting with Desktop SSH.')
+    const error: any = new Error('请先更新远程 Windows 主机上的后端，再用桌面端 SSH 连接。')
     error.kind = 'update-required'
     throw error
   }

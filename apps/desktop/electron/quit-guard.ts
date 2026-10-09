@@ -123,7 +123,7 @@ export function quitPromptFor(
       .filter(line => line !== null)
       .join('\n')
       .trim(),
-    message: work.count === 1 ? 'Hermes is still working on 1 chat.' : `Hermes is still working on ${work.count} chats.`
+    message: work.count === 1 ? '黔算智能体还有 1 个会话在处理。' : `黔算智能体还有 ${work.count} 个会话在处理。`
   }
 }
 

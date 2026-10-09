@@ -172,7 +172,7 @@ export async function resolveVenvHermesCommand(
   }
 
   return {
-    label: `existing Hermes Python at ${python}`,
+    label: `检测到已有 Python 环境：${python}`,
     command: python,
     args: ['-m', 'hermes_cli.main', ...backendArgs],
     bootstrap: false,

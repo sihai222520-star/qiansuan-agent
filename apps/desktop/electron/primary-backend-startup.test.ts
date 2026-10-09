@@ -250,7 +250,7 @@ test('invalidating a pending runtime discovery prevents setup and bootstrap', as
   await resolving
   state.invalidate()
   finish(bootstrapBackend)
-  await assert.rejects(pending, /superseded/)
+  await assert.rejects(pending, /被更新的连接尝试接替/)
   assert.equal(options.waitForDecision.mock.calls.length, 0)
   assert.equal(options.ensureLocalRuntime.mock.calls.length, 0)
 })

@@ -171,7 +171,7 @@ export class AppInstallerStrategy {
             this.deps.emitUpdateProgress({
               stage: 'restart',
               percent: 100,
-              message: 'Automatic relaunch could not be registered. Reopen Hermes after App Installer finishes.'
+              message: '自动重启注册失败。App Installer 完成后请重新打开黔算智能体。'
             })
         }
       },

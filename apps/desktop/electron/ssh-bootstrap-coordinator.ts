@@ -29,7 +29,7 @@ function createBootstrapCoordinator() {
 
   function start(scope, fingerprint, run, metadata = null) {
     if (shutdownRequested) {
-      const error: any = new Error('SSH bootstrap was cancelled because Desktop is quitting.')
+      const error: any = new Error('SSH 引导已取消：应用正在退出。')
       error.kind = 'superseded'
 
       return Promise.reject(markExpectedTransition(error))

@@ -168,7 +168,7 @@ function waitForDashboardPort(
 
     function onExit(code, signal) {
       cleanup()
-      reject(new Error(`Hermes backend: exited before port announcement (${signal || code})${describeOutputTail()}`))
+      reject(new Error(`后端在报告端口前就退出了（${signal || code}）${describeOutputTail()}`))
     }
 
     function onError(err) {
@@ -256,7 +256,7 @@ function waitForDashboardReadyFile(
 
     function onExit(code, signal) {
       cleanup()
-      reject(new Error(`Hermes backend: exited before port announcement (${signal || code})${describeOutputTail()}`))
+      reject(new Error(`后端在报告端口前就退出了（${signal || code}）${describeOutputTail()}`))
     }
 
     function onError(err) {
@@ -266,7 +266,7 @@ function waitForDashboardReadyFile(
 
     const timer = setTimeout(() => {
       cleanup()
-      reject(new Error(`Timed out waiting for Hermes backend port announcement (${timeoutMs}ms)`))
+      reject(new Error(`等待后端报告端口超时（${timeoutMs}ms）`))
     }, timeoutMs)
 
     child.on('exit', onExit)

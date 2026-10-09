@@ -2252,7 +2252,7 @@ let bootProgressState = {
   error: null,
   fakeMode: BOOT_FAKE_MODE,
   isCloudBackendDown: false,
-  message: 'Waiting to start Hermes backend',
+  message: '正在启动黔算智能体后端',
   phase: 'idle',
   progress: 0,
   retryable: false,
@@ -3080,7 +3080,7 @@ async function waitForUpdateToFinish() {
 
         await advanceBootProgress(
           'backend.update-wait',
-          'An update is still running — Hermes will start automatically when it finishes. Its progress is in logs/update.log.',
+          '更新还在进行——黔算智能体会在更新完成后自动启动。进度见 logs/update.log。',
           12
         )
 
@@ -3089,7 +3089,7 @@ async function waitForUpdateToFinish() {
 
       await advanceBootProgress(
         'backend.update-wait',
-        'An update is finishing — Hermes will start automatically when it completes…',
+        '更新即将完成——黔算智能体会自动启动…',
         12
       )
     },
@@ -3133,7 +3133,7 @@ async function waitForUpdateToFinish() {
       log: rememberLog
     })
   ) {
-    await advanceBootProgress('backend.update-restart', 'Restarting Hermes to load the updated app…', 14)
+    await advanceBootProgress('backend.update-restart', '正在重启黔算智能体以加载新版本…', 14)
     // Park while the scheduled exit lands so this stale build never starts a
     // backend; the failsafe below only runs if the exit somehow does not.
     await new Promise(resolve => setTimeout(resolve, BUNDLE_SWAP_RELAUNCH_FAILSAFE_MS))
@@ -5343,7 +5343,7 @@ async function resolveHermesBackend(backendArgs: string[]): Promise<ResolvedHerm
           (await verifyHermesCli(hermesCommand, { shell: shellForProbe }))
         ) {
           return {
-            label: `existing Hermes CLI at ${hermesCommand}`,
+            label: `检测到已有命令行程序：${hermesCommand}`,
             command: hermesCommand,
             args: backendArgs,
             bootstrap: false,
@@ -5425,7 +5425,7 @@ async function resolveHermesBackend(backendArgs: string[]): Promise<ResolvedHerm
   //    is a recoverable state the GUI can drive through.
   return {
     kind: 'bootstrap-needed',
-    label: 'Hermes Agent not installed yet; bootstrap required',
+    label: '黔算智能体尚未安装，需要先完成安装',
     command: null,
     args: backendArgs,
     bootstrap: true,
@@ -5562,7 +5562,7 @@ async function ensureRuntime(
     bootstrapAbortController = null
 
     if (bootstrapResult.cancelled) {
-      const cancelledError = new Error('Hermes install was cancelled.') as any
+      const cancelledError = new Error('安装已取消。') as any
       cancelledError.isBootstrapFailure = true
       cancelledError.bootstrapCancelled = true
       bootstrapFailure = cancelledError
@@ -5637,7 +5637,7 @@ function fetchJson(url, token, options: any = {}) {
         const timeoutMs = resolveTimeoutMs(options.timeoutMs, DEFAULT_FETCH_TIMEOUT_MS)
 
         if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-          reject(new Error(`Unsupported Hermes backend URL protocol: ${parsed.protocol}`))
+          reject(new Error(`不支持的后端地址协议：${parsed.protocol}`))
 
           return
         }
@@ -5713,7 +5713,7 @@ function fetchJson(url, token, options: any = {}) {
 
         req.on('error', reject)
         req.setTimeout(timeoutMs, () => {
-          req.destroy(new Error(`Timed out connecting to Hermes backend after ${timeoutMs}ms`))
+          req.destroy(new Error(`连接后端超时（${timeoutMs}ms）`))
         })
 
         // From here the request goes on the wire: a later transport error can no
@@ -5756,7 +5756,7 @@ function fetchPublicJson(url, options: any = {}) {
         const timeoutMs = resolveTimeoutMs(options.timeoutMs, DEFAULT_FETCH_TIMEOUT_MS)
 
         if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-          reject(new Error(`Unsupported Hermes backend URL protocol: ${parsed.protocol}`))
+          reject(new Error(`不支持的后端地址协议：${parsed.protocol}`))
 
           return
         }
@@ -5817,7 +5817,7 @@ function fetchPublicJson(url, options: any = {}) {
 
         req.on('error', reject)
         req.setTimeout(timeoutMs, () => {
-          req.destroy(new Error(`Timed out connecting to Hermes backend after ${timeoutMs}ms`))
+          req.destroy(new Error(`连接后端超时（${timeoutMs}ms）`))
         })
 
         // Past this point the request is on the wire — see fetchJson.
@@ -7767,7 +7767,7 @@ function fetchJsonViaOauthSession(url, options: any = {}) {
       }
 
       if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-        reject(new Error(`Unsupported Hermes backend URL protocol: ${parsed.protocol}`))
+        reject(new Error(`不支持的后端地址协议：${parsed.protocol}`))
 
         return
       }
@@ -7810,7 +7810,7 @@ function fetchJsonViaOauthSession(url, options: any = {}) {
           // already finished
         }
 
-        reject(new Error(`Timed out connecting to Hermes backend after ${timeoutMs}ms`))
+        reject(new Error(`连接后端超时（${timeoutMs}ms）`))
       }, timeoutMs)
 
       request.on('response', (res: Electron.IncomingMessage): void => {
@@ -8181,7 +8181,7 @@ async function discoverCloudAgents(org?: string) {
 
   if (!(await hasLivePortalSession())) {
     const err = new Error(
-      'You are not signed in to Hermes Cloud. Open Settings → Gateway, choose Hermes Cloud, and sign in.'
+      '你还没有登录黔算云端。请打开 设置 → 网关，选择黔算云端并登录。'
     ) as any
 
     err.needsCloudLogin = true
@@ -8232,7 +8232,7 @@ async function discoverCloudAgents(org?: string) {
       // recover it) — surface it as a re-login, not a generic failure.
       if (error && error.statusCode === 401) {
         const err = new Error(
-          'Your Hermes Cloud session has expired. Open Settings → Gateway and sign in again.'
+          '黔算云端的登录已过期。请打开 设置 → 网关 重新登录。'
         ) as any
 
         err.needsCloudLogin = true
@@ -8327,7 +8327,7 @@ async function cloudAgentSilentSignIn(dashboardUrl) {
   // interactive prompt rather than a silent cascade. Discovery already gates on
   // this, but a selection can arrive after the session lapsed.
   if (!(await hasLivePortalSession())) {
-    const err = new Error('Your Hermes Cloud session has expired. Sign in to Hermes Cloud again.') as any
+    const err = new Error('黔算云端的登录已过期，请重新登录。') as any
     err.needsCloudLogin = true
     throw err
   }
@@ -9626,8 +9626,8 @@ async function buildRemoteConnection(
 
   if (!token) {
     throw new Error(
-      'Remote Hermes gateway is selected, but no session token is saved. ' +
-        'Open Settings → Gateway and save a token, or switch back to Local.'
+      '已选择远程网关，但还没有保存访问令牌。' +
+        '请打开 设置 → 网关 保存令牌，或切换回本地模式。'
     )
   }
 
@@ -12385,7 +12385,7 @@ async function runPoolBackendStart(
 
   const authToken = await adoptServedDashboardToken(baseUrl, token, {
     childAlive,
-    label: `Hermes backend for profile "${profile}"`,
+    label: `配置档 ${profile} 的后端`,
     rememberLog
   })
 
@@ -12953,7 +12953,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
   // otherwise SIGTERMs the running instance's live backend (#87295).
   if (!isPrimaryInstance) {
     rememberLog('[boot] non-primary instance: skipping backend machinery')
-    throw new Error('Hermes Desktop is already running in another window.')
+    throw new Error('黔算智能体已经在另一个窗口运行。')
   }
 
   await reapOrphanedBackendsOnce()
@@ -13044,7 +13044,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
 
       updateBootProgress({
         phase: 'backend.ready',
-        message: 'Remote Hermes backend is ready',
+        message: '远程后端已就绪',
         progress: 94,
         running: true,
         error: null
@@ -13141,7 +13141,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
 
       updateBootProgress({
         phase: 'backend.ready',
-        message: 'Attached to the running Hermes backend',
+        message: '已连接到运行中的后端',
         progress: 94,
         running: true,
         error: null
@@ -13269,7 +13269,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
     if (!processOwner) {
       await localBackendLifecycle.stop(hermesProcess)
       releaseBackendChild(hermesProcess)
-      throw new Error('Hermes backend start was superseded by a newer connection attempt.')
+      throw new Error('后端启动已被更新的连接尝试接替。')
     }
 
     hermesProcess.stdout.on('data', rememberLog)
@@ -13287,7 +13287,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
       if (!backendConnectionState.clearForCurrentProcess(processOwner)) {
         rememberLog(`Ignoring stale Hermes backend error: ${error.message}`)
         scheduleUnexpectedPrimaryRecovery({ error: error.message, ready: backendReady })
-        rejectBackendStart?.(new Error('Hermes backend start was superseded by a newer connection attempt.'))
+        rejectBackendStart?.(new Error('后端启动已被更新的连接尝试接替。'))
 
         return
       }
@@ -13301,7 +13301,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
       updateBootProgress(
         {
           error: error.message,
-          message: `Hermes backend failed to start: ${error.message}`,
+          message: `后端启动失败：${error.message}`,
           phase: 'backend.error',
           running: false
         },
@@ -13319,7 +13319,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
         scheduleUnexpectedPrimaryRecovery({ code, signal, ready: backendReady })
 
         if (!backendReady) {
-          rejectBackendStart?.(new Error('Hermes backend start was superseded by a newer connection attempt.'))
+          rejectBackendStart?.(new Error('后端启动已被更新的连接尝试接替。'))
         }
 
         return
@@ -13408,7 +13408,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
 
     updateBootProgress({
       phase: 'backend.ready',
-      message: 'Hermes backend is ready. Finalizing desktop startup',
+      message: '后端已就绪，正在完成启动',
       progress: 94,
       running: true,
       error: null
@@ -18428,7 +18428,7 @@ ipcMain.handle('hermes:quick-entry:submit', (event, payload) => {
   }
 
   if (!mainWindow || mainWindow.isDestroyed()) {
-    return { code: 'no-primary', message: 'The primary Hermes window is unavailable.', ok: false, retryable: true }
+    return { code: 'no-primary', message: '主窗口当前不可用。', ok: false, retryable: true }
   }
 
   const target =
@@ -19016,7 +19016,7 @@ async function runDesktopUninstall(mode: string): Promise<DesktopUninstallResult
     return {
       ok: false,
       error: 'agent-missing',
-      message: `Can't run the uninstaller: no Hermes agent venv at ${VENV_ROOT}.`
+      message: `无法运行卸载程序：找不到后端环境（${VENV_ROOT}）。`
     }
   }
 

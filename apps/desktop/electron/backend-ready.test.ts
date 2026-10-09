@@ -111,7 +111,7 @@ test('rejects when the child exits before announcing', async () => {
   const child = makeFakeChild()
   const p = waitForDashboardPort(child, 1000)
   child.emit('exit', 1, null)
-  await assert.rejects(p, /exited before port announcement/)
+  await assert.rejects(p, /报告端口前就退出了/)
 })
 
 test('rejects on a child error event', async () => {
@@ -203,7 +203,7 @@ test('waitForDashboardReadyFile rejects when the child exits before file readine
   try {
     const p = waitForDashboardReadyFile(tmp.file, child, 1000)
     child.emit('exit', 1, null)
-    await assert.rejects(p, /exited before port announcement/)
+    await assert.rejects(p, /报告端口前就退出了/)
   } finally {
     tmp.cleanup()
   }
@@ -222,7 +222,7 @@ test('exit-before-announcement error carries the buffered output tail (stdout pa
 
   child.emit('exit', 1, null)
 
-  await assert.rejects(wait, /exited before port announcement \(1\)[\s\S]*ModuleNotFoundError: hermes_cli/)
+  await assert.rejects(wait, /报告端口前就退出了（1）[\s\S]*ModuleNotFoundError: hermes_cli/)
 })
 
 test('exit-before-announcement error carries the buffered output tail (ready-file path)', async () => {
@@ -236,7 +236,7 @@ test('exit-before-announcement error carries the buffered output tail (ready-fil
 
   child.emit('exit', null, 'SIGSEGV')
 
-  await assert.rejects(wait, /exited before port announcement \(SIGSEGV\)[\s\S]*Traceback/)
+  await assert.rejects(wait, /报告端口前就退出了（SIGSEGV）[\s\S]*Traceback/)
 })
 
 // ---------------------------------------------------------------------------

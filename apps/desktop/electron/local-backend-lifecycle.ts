@@ -75,7 +75,7 @@ export function createLocalBackendLifecycle<Child>(
   }
 
   const shutdown = createBackendShutdownCoordinator((): Promise<void> => {
-    controller.abort(markExpectedTransition(new Error('Hermes Desktop is quitting.')))
+    controller.abort(markExpectedTransition(new Error('黔算智能体正在退出。')))
     deps.cancelSetup()
 
     return waitForTeardown([...starts, ...[...children].map(stop), ...stops.values()], deps.timeoutMs ?? 7_000)

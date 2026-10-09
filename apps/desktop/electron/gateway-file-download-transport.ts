@@ -26,7 +26,7 @@ function downloadUrl(url: string): URL {
   }
 
   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    throw new Error(`Unsupported Hermes backend URL protocol: ${parsed.protocol}`)
+    throw new Error(`不支持的后端地址协议：${parsed.protocol}`)
   }
 
   return parsed
@@ -69,7 +69,7 @@ export function downloadViaTokenToFile(
 
     request.on('error', reject)
     request.setTimeout(timeoutMs, (): void => {
-      request.destroy(new Error(`Timed out connecting to Hermes backend after ${timeoutMs}ms`))
+      request.destroy(new Error(`连接后端超时（${timeoutMs}ms）`))
     })
     request.end()
   })
@@ -128,7 +128,7 @@ export function downloadViaOauthSessionToFile<S>(
 
       settled = true
       request.abort()
-      reject(new Error(`Timed out connecting to Hermes backend after ${timeoutMs}ms`))
+      reject(new Error(`连接后端超时（${timeoutMs}ms）`))
     }, timeoutMs)
 
     request.on('response', (response: GatewayDownloadResponse): void => {

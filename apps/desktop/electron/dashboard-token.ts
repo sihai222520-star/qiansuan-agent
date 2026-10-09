@@ -13,14 +13,14 @@ async function fetchPublicText(url, options: any = {}) {
   const { protocol } = new URL(url)
 
   if (protocol !== 'http:' && protocol !== 'https:') {
-    throw new Error(`Unsupported Hermes backend URL protocol: ${protocol}`)
+    throw new Error(`不支持的后端地址协议：${protocol}`)
   }
 
   const timeoutMs = options.timeoutMs ?? DEFAULT_TOKEN_FETCH_TIMEOUT_MS
 
   const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) }).catch(error => {
     if (error.name === 'TimeoutError') {
-      throw new Error(`Timed out connecting to Hermes backend after ${timeoutMs}ms`)
+      throw new Error(`连接后端超时（${timeoutMs}ms）`)
     }
 
     throw error

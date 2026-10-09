@@ -1368,7 +1368,7 @@ function createSshProbeConnection(config, options: any = {}) {
 // caller this was replaced, not that it failed.
 function assertBootstrapNotSuperseded(signal) {
   if (signal?.aborted) {
-    const error: any = new Error('SSH bootstrap was cancelled.')
+    const error: any = new Error('SSH 引导已取消。')
     error.kind = 'superseded'
     throw error
   }

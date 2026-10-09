@@ -321,6 +321,6 @@ test('a start after shutdown rejects with a marked expected-transition sentinel'
     coordinator.start('', 'fingerprint', async () => {}),
     (error: unknown) =>
       isExpectedTransition(error) &&
-      (error as Error).message === 'SSH bootstrap was cancelled because Desktop is quitting.'
+      (error as Error).message === 'SSH 引导已取消：应用正在退出。'
   )
 })

@@ -313,7 +313,7 @@ async function probeRemoteHermesHome(ssh) {
 
     return out || '~/.hermes'
   } catch (cause) {
-    const error: any = new Error('Could not resolve the remote Hermes home.')
+    const error: any = new Error('无法解析远程后端主目录。')
     error.kind = 'transient-transport-error'
     error.cause = cause
     throw error
@@ -344,7 +344,7 @@ async function assertRemoteInstallUpdateClear(ssh, hermesHome, hermesPath = '') 
         .split(/\r?\n/)
         .pop() || ''
   } catch (cause) {
-    const error: any = new Error('Could not prove that the remote Hermes install is clear for SSH startup.')
+    const error: any = new Error('无法确认远程后端安装可以安全地进行 SSH 启动。')
     error.kind = 'update-in-progress'
     error.cause = cause
     throw error
@@ -376,7 +376,7 @@ async function listRemoteHermesProfiles(ssh) {
   try {
     listing = await ssh.exec(`if [ -d ${dir} ]; then ls -1 ${dir}; fi`)
   } catch (cause) {
-    const error: any = new Error('Could not list remote Hermes profiles.')
+    const error: any = new Error('无法列出远程配置档。')
     error.kind = 'transient-transport-error'
     error.cause = cause
     throw error
@@ -398,7 +398,7 @@ async function readRemoteInstallId(ssh) {
   try {
     out = await ssh.exec(`if [ -f ${file} ]; then cat ${file}; fi`)
   } catch (cause) {
-    const error: any = new Error('Could not read the remote Hermes install id.')
+    const error: any = new Error('无法读取远程后端安装标识。')
     error.kind = 'transient-transport-error'
     error.cause = cause
     throw error
@@ -420,7 +420,7 @@ function assertSafeRemoteHome(home) {
   const value = String(home || '').trim()
 
   if (!/^(\/|~\/)[A-Za-z0-9._/+-]+$/.test(value) || value.includes('..')) {
-    const error: any = new Error('Unsafe remote Hermes home.')
+    const error: any = new Error('远程后端主目录不安全。')
     error.kind = 'unsafe-path'
     throw error
   }
