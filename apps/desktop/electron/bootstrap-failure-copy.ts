@@ -14,28 +14,28 @@
 /** Manifest stage name -> everyday label. Unknown names fall back to humanizeStageName. */
 export const BOOTSTRAP_STAGE_LABELS: ReadonlyMap<string, string> = new Map([
   // scripts/install.ps1 manifest
-  ['uv', 'Package installer'],
+  ['uv', '包安装器'],
   ['git', 'Git'],
   ['node', 'Node.js'],
-  ['system-packages', 'System packages'],
-  ['repository', 'Hermes source code'],
-  ['python', 'Python runtime'],
-  ['venv', 'Python environment'],
-  ['dependencies', 'Python packages'],
-  ['node-deps', 'Browser tool packages'],
-  ['desktop', 'Desktop app build'],
-  ['platform-sdks', 'Platform tools'],
-  ['configure', 'Settings'],
-  ['config-templates', 'Settings templates'],
-  ['path', 'Hermes command'],
-  ['gateway', 'Hermes service'],
-  ['bootstrap-marker', 'Finishing touches'],
+  ['system-packages', '系统组件'],
+  ['repository', '黔算智能体源码'],
+  ['python', 'Python 运行时'],
+  ['venv', 'Python 虚拟环境'],
+  ['dependencies', 'Python 依赖包'],
+  ['node-deps', '浏览器工具依赖'],
+  ['desktop', '桌面应用构建'],
+  ['platform-sdks', '平台工具'],
+  ['configure', '配置'],
+  ['config-templates', '配置模板'],
+  ['path', '命令行程序'],
+  ['gateway', '黔算服务'],
+  ['bootstrap-marker', '收尾步骤'],
   // scripts/install.sh manifest (names that differ from the Windows one)
-  ['prerequisites', 'System prerequisites'],
-  ['python-deps', 'Python packages'],
-  ['config', 'Settings'],
-  ['setup', 'Settings'],
-  ['complete', 'Finishing touches']
+  ['prerequisites', '系统前置组件'],
+  ['python-deps', 'Python 依赖包'],
+  ['config', '配置'],
+  ['setup', '配置'],
+  ['complete', '收尾步骤']
 ])
 
 /** `system-packages` -> `System packages`. */
@@ -54,23 +54,25 @@ export function bootstrapStageLabel(stage: string | null | undefined): string | 
 }
 
 const BOOTSTRAP_FAILURE_REMEDY =
-  'Common causes: no internet connection, antivirus blocking the installer, or another copy of Hermes running. ' +
-  'Close other Hermes windows and choose Reload and retry; if it fails again, open the logs and send them to support.'
+  '常见原因：没有联网、杀毒软件拦截了安装器，或者有另一个黔算智能体正在运行。' +
+  '请关闭其他黔算智能体窗口后选择「重新加载并重试」；如果再次失败，请打开日志并把日志发给支持人员。'
 
 /**
  * Build the Error.message for a failed bootstrap. First line is the plain
- * explanation; the raw error follows on its own "Details:" line.
+ * explanation; the raw error follows on its own "详细信息：" line. The marker
+ * is matched by desktop-install-overlay's splitter (which accepts both the
+ * Chinese and the legacy English form).
  */
 export function describeBootstrapFailure(failedStage: string | null | undefined, rawError: unknown): string {
   const label = bootstrapStageLabel(failedStage)
 
   const lead = label
-    ? `Setting up Hermes stopped during the '${label}' step.`
-    : 'Setting up Hermes stopped before it could finish.'
+    ? `安装黔算智能体在「${label}」这一步中断了。`
+    : '安装黔算智能体还没完成就中断了。'
 
-  const details = typeof rawError === 'string' && rawError.trim() ? rawError.trim() : 'unknown error'
+  const details = typeof rawError === 'string' && rawError.trim() ? rawError.trim() : '未知错误'
 
-  return `${lead} ${BOOTSTRAP_FAILURE_REMEDY}\nDetails: ${details}`
+  return `${lead} ${BOOTSTRAP_FAILURE_REMEDY}\n详细信息：${details}`
 }
 
 /**
@@ -81,8 +83,8 @@ export function describeBootstrapFailure(failedStage: string | null | undefined,
  */
 export function missingInstallPartMessage(whatIsMissing: string): string {
   return (
-    "Part of Hermes' installation is missing (it may have been deleted or quarantined by antivirus). " +
-    'Choose Repair install below to put it back — your chats and settings are not affected. ' +
-    `Details: ${whatIsMissing}`
+    '黔算智能体的安装缺少了一部分（可能被误删，或被杀毒软件隔离）。' +
+    '请在下方选择「修复安装」找回——你的聊天记录和设置不会受影响。' +
+    `详细信息：${whatIsMissing}`
   )
 }

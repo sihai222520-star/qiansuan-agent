@@ -118,9 +118,11 @@ test('nonstable runtime pins userData before the app name can change', async ():
 })
 
 test.each([
-  [undefined, 'Hermes', 'hermes', 'latest', 'canary'],
-  ['bundled', 'Hermes Agent', 'hermes', 'latest', 'canary'],
-  ['light', 'Hermes Light', 'hermes-light', 'light', 'light-canary']
+  // 黔算：三个变体身份全部品牌化且互异（isolation 契约不变）。bundled =
+  // 正式发行；light = 已停发的旧瘦客户端（遗留身份）；full = 开发变体。
+  [undefined, '黔算智能体 Dev', 'qiansuan-dev', 'latest', 'canary'],
+  ['bundled', '黔算智能体', 'qiansuan', 'latest', 'canary'],
+  ['light', '黔算轻量版', 'qiansuan-light', 'light', 'light-canary']
 ] as const)(
   '%s separates stable, canary and independent commits',
   async (

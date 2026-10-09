@@ -1,6 +1,7 @@
 // The desktop product identity — THE single source for every name-shaped
-// value a variant owns. HERMES_DESKTOP_VARIANT=light builds "Hermes
-// Light", the remote-only client; everything else is full "Hermes".
+// value a variant owns. HERMES_DESKTOP_VARIANT=bundled builds the shipping
+// offline-bundle product; 'light' is the retired thin-client experiment;
+// everything else ('') is the plain full/dev client.
 //
 // Consumed at build time by electron-builder.config.cjs (packaging
 // identity). electron/product-identity.ts is the typed runtime accessor.
@@ -8,13 +9,19 @@
 /// <reference types="node" />
 'use strict'
 
-// ── 黔算智能体品牌取值（本补丁新增；改品牌只改这一处）────────────────────
+// ── 黔算智能体品牌取值（改品牌只改这一处）────────────────────
 // 中文名给人看，ASCII 名给系统用（appId / exe / CLI / MSIX 身份）——
 // 两套名字刻意分开，避免中文流进标识符。
 //
-// appId / msixAppId 用**显式值**而不是从 kebab/pascal 拼：
-// 上游的拼接公式会得到 com.qiansuan.qiansuan 与 QianSuan.QianSuan，
-// 既难看也不是我们定的身份；身份是契约，应当写死而不是"拼出来碰巧对"。
+// appId / msixAppId 用**显式值**而不是从 kebab/pascal 拼：身份是契约，
+// 应当写死而不是"拼出来碰巧对"。
+//
+// 三个变体身份刻意**互异**（isolation 契约，见 product-identity.test.ts：
+// 同机共存不得互踩 userData / 单实例锁 / 更新通道）：
+//   bundled      = 正式发行（离线大包，产品主线）——appId 沿用
+//                  com.qiansuan.agent，保证上一轮 light 装机的升级连续性；
+//   light        = 已停发的瘦客户端实验，降级为独立遗留身份；
+//   ''(full/dev) = 源码直跑的开发变体，标 Dev 以免与发行版混淆。
 const BRAND = {
   display: '黔算智能体',
   kebab: 'qiansuan',
@@ -24,16 +31,26 @@ const BRAND = {
 }
 
 const variants = {
-  '': { display: 'Hermes', kebab: 'hermes', pascal: 'Hermes' },
+  '': {
+    display: '黔算智能体 Dev',
+    kebab: 'qiansuan-dev',
+    pascal: 'QianSuanDev',
+    appId: 'com.qiansuan.dev',
+    msixAppId: 'QianSuan.Dev'
+  },
   light: {
-    display: BRAND.display,
-    kebab: BRAND.kebab,
-    pascal: BRAND.pascal
+    display: '黔算轻量版',
+    kebab: 'qiansuan-light',
+    pascal: 'QianSuanLight',
+    appId: 'com.qiansuan.light',
+    msixAppId: 'QianSuan.Light'
   },
   bundled: {
-    display: 'Hermes Agent',
-    kebab: 'hermes-bundled',
-    pascal: 'HermesBundled'
+    display: BRAND.display,
+    kebab: BRAND.kebab,
+    pascal: BRAND.pascal,
+    appId: BRAND.appId,
+    msixAppId: BRAND.msixAppId
   }
 }
 
@@ -69,7 +86,7 @@ const displayName = buildCommit
 
 const kebabSuffix = buildCommit ? `-${buildCommit}` : canary ? '-canary' : ''
 const pascalSuffix = buildCommit ? `Commit${buildCommit}` : canary ? 'Canary' : ''
-const cliName = `${light ? BRAND.kebab : 'hermes'}${kebabSuffix}`
+const cliName = `${name.kebab}${kebabSuffix}`
 if (store && (canary || buildCommit)) {
   throw new Error('Store packaging is only eligible for stable releases')
 }
@@ -81,18 +98,17 @@ const identity = {
   store,
   light,
   displayName,
-  appId: light ? `${BRAND.appId}${kebabSuffix}` : `com.nousresearch.${name.kebab}${kebabSuffix}`,
+  appId: `${name.appId}${kebabSuffix}`,
   // Store and commit builds do not publish a release feed.
   channel: store || buildCommit ? null : light ? (canary ? 'light-canary' : 'light') : (canary ? 'canary' : 'latest'),
   appNamePascal: `${name.pascal}${pascalSuffix}`,
   artifactNamePascal: name.pascal,
   // 中文产品名不能当 exe 名：快捷方式目标、脚本调用、杀软启发式、
-  // 更新产物命名都假设 exe 是 ASCII。light（我们的瘦客户端）用 Pascal 品牌名。
-  windowsExecutableName: kebabSuffix ? cliName : light ? name.pascal : displayName,
+  // 更新产物命名都假设 exe 是 ASCII——所以稳定版 exe 用 Pascal 品牌名
+  // （QianSuan.exe），commit/canary 构建沿用带后缀的 CLI 名。
+  windowsExecutableName: kebabSuffix ? cliName : name.pascal,
   cliName,
-  msixAppIdWithOrg: light
-    ? `${BRAND.msixAppId}${pascalSuffix}`
-    : `NousResearch.${name.pascal}${pascalSuffix}`,
+  msixAppIdWithOrg: `${name.msixAppId}${pascalSuffix}`,
   ...(store
     ? {
         storeMsix: {

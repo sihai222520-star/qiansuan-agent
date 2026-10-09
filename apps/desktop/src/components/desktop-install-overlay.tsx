@@ -162,10 +162,14 @@ function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err || 'Unknown error')
 }
 
-/** Split "lead sentence\nDetails: raw" into [lead, raw]; no marker → [text, null]. */
+/**
+ * Split "lead sentence\nDetails: raw" into [lead, raw]; no marker → [text, null].
+ * 黔算：bootstrap 失败文案已中文化（bootstrap-failure-copy.ts），分割标记同时
+ * 接受中文「详细信息：」与旧英文 "Details:"（后端/上游其余消息仍用英文标记）。
+ */
 export function splitFailureDetails(text: string | null): [string, string | null] {
   const value = (text ?? '').trim()
-  const marker = value.search(/\n?\s*Details:\s*/)
+  const marker = value.search(/\n?\s*(?:详细信息：|Details:)\s*/)
 
   if (marker < 0) {
     return [value, null]
@@ -175,7 +179,7 @@ export function splitFailureDetails(text: string | null): [string, string | null
 
   const detail = value
     .slice(marker)
-    .replace(/^\s*Details:\s*/, '')
+    .replace(/^\s*(?:详细信息：|Details:)\s*/, '')
     .trim()
 
   return [lead || value, detail || null]
