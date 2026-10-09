@@ -183,7 +183,7 @@ export function createMinimizeToTray(options: Options) {
             height: process.platform === 'darwin' ? 18 : 24
           })
         )
-        tray.setToolTip('Hermes')
+        tray.setToolTip('黔算智能体')
         tray.setContextMenu(
           Menu.buildFromTemplate([
             { label: '显示黔算智能体', click: restore },

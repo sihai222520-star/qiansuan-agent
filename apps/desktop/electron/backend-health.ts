@@ -55,11 +55,11 @@ export function isConnectionRefusedError(error: unknown): boolean {
 }
 
 export const REMOTE_SESSION_EXPIRED_MESSAGE =
-  'Your remote gateway session has expired. Open Settings → Gateway and click "Sign in" again.'
+  '远程网关登录已过期。请打开 设置 → 网关，重新点击「登录」。'
 
 export const REMOTE_UNSIGNED_OAUTH_MESSAGE =
-  'Remote Hermes gateway uses OAuth, but you are not signed in. ' +
-  'Open Settings → Gateway and click "Sign in", or switch back to Local.'
+  '远程网关使用 OAuth 登录，但你还没有登录。' +
+  '请打开 设置 → 网关 点击「登录」，或切换回本地模式。'
 
 /**
  * True for HTTP 502/503/504 from the backend — a server-side fault, not a
@@ -243,7 +243,7 @@ export function isReauthRequiredError(error: unknown): boolean {
 }
 
 function supersededError() {
-  const error: any = new Error('SSH bootstrap was superseded by newer connection settings.')
+  const error: any = new Error('后端启动已被更新的连接设置接替。')
   error.kind = 'superseded'
 
   return error

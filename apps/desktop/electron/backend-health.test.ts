@@ -242,7 +242,8 @@ test('a credentialed 401 fails fast for reauth instead of reporting a dead sessi
     (error: any) => {
       assert.equal(isReauthRequiredError(error), true)
       assert.equal(error.needsOauthLogin, true)
-      assert.match(error.message, /remote gateway session has expired/i)
+      // 黔算：常量已中文化，断言改中文锚（isRemoteReauthError 同步认）
+      assert.match(error.message, /远程网关登录已过期/)
 
       return true
     }
@@ -264,7 +265,7 @@ test('unsigned OAuth is a terminal reauth failure; a bare needsOauthLogin hint i
   assert.equal(unsigned.needsOauthLogin, true)
   assert.equal(unsigned.isReauthRequired, true)
   assert.equal(isReauthRequiredError(unsigned), true)
-  assert.match(unsigned.message, /not signed in/i)
+  assert.match(unsigned.message, /还没有登录/)
   assert.equal(isReauthRequiredError({ needsOauthLogin: true }), false)
   assert.equal(isReauthRequiredError(new Error('Could not reach the remote Hermes gateway')), false)
 })

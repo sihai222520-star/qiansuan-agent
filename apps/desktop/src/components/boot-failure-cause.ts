@@ -23,8 +23,8 @@ const CAUSE_PATTERNS: readonly [LocalBootCause, RegExp][] = [
     'installMissing',
     /installation is missing|is missing or incomplete|missing or damaged|venv missing|no module named|modulenotfounderror/i
   ],
-  ['timedOut', /timed out|timeout/i],
-  ['exitedEarly', /exited before|exited \(|process exited|exited with|traceback \(most recent call last\)/i]
+  ['timedOut', /timed out|timeout|超时/i],
+  ['exitedEarly', /exited before|exited \(|process exited|exited with|就退出了|traceback \(most recent call last\)/i]
 ]
 
 export function classifyLocalBootFailure(error: string | null | undefined): LocalBootCause | null {

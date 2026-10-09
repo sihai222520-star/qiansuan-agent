@@ -173,3 +173,24 @@ describe('deriveProviderShape', () => {
     )
   })
 })
+
+// 黔算：Windows SSH '远程后端过旧' 失败串已中文化（块3b），分类器需认中文锚点——
+// 异族审查 22 号文指出丢 'update' 锚点会让真实原因落 sshErrUnknown（断裂二）。
+describe('中文错误串的分类锚点（黔算中文化回归防护）', () => {
+  it('sshFailureMessage 认中文"更新/超时/尚未安装/无法连接"', () => {
+    const copy = {
+      sshErrUpdateRequired: '远程后端过旧',
+      sshErrTimeout: '连接超时',
+      sshErrUnknown: '未知'
+    }
+
+    expect(sshFailureMessage({ mode: 'ssh' }, '请先更新远程 Windows 主机上的后端，再用桌面端 SSH 连接。', copy)).toBe('远程后端过旧')
+    expect(sshFailureMessage({ mode: 'ssh' }, '连接后端超时（2000ms）', copy)).toBe('连接超时')
+  })
+
+  it('isRemoteReauthError 认中文"远程网关登录已过期"', () => {
+    expect(isRemoteReauthError('远程网关登录已过期。请打开 设置 → 网关，重新点击「登录」。')).toBe(true)
+    expect(isRemoteReauthError('远程网关使用 OAuth 登录，但你还没有登录。')).toBe(true)
+    expect(isRemoteReauthError('后端启动失败：细节')).toBe(false)
+  })
+})

@@ -54,10 +54,13 @@ export function isRemoteReauthError(error: string | null | undefined): boolean {
 
   return (
     text.includes('remote gateway session has expired') ||
+    text.includes('远程网关登录已过期') ||
     text.includes('gateway sign-in required') ||
+    text.includes('需要登录网关') ||
     text.includes('needs oauth login') ||
     text.includes('app token is invalid') ||
-    (text.includes('oauth') && (text.includes('not signed in') || text.includes('sign in')))
+    (text.includes('oauth') && (text.includes('not signed in') || text.includes('sign in'))) ||
+    (text.includes('oauth') && text.includes('登录'))
   )
 }
 
@@ -108,7 +111,7 @@ export function sshFailureMessage(
     return copy.sshErrAuth || raw
   }
 
-  if (text.includes('not installed') || text.includes('not found')) {
+  if (text.includes('not installed') || text.includes('not found') || text.includes('尚未安装') || text.includes('未安装') || text.includes('找不到')) {
     return copy.sshErrNotInstalled || raw
   }
 
@@ -116,15 +119,15 @@ export function sshFailureMessage(
     return copy.sshErrPlatform || raw
   }
 
-  if (text.includes('timed out') || text.includes('timeout')) {
+  if (text.includes('timed out') || text.includes('timeout') || text.includes('超时')) {
     return copy.sshErrTimeout || raw
   }
 
-  if (text.includes('update')) {
+  if (text.includes('update') || text.includes('更新')) {
     return copy.sshErrUpdateRequired || raw
   }
 
-  if (text.includes('unreachable') || text.includes('could not reach')) {
+  if (text.includes('unreachable') || text.includes('could not reach') || text.includes('无法连接') || text.includes('连不上') || text.includes('无法访问')) {
     return copy.sshErrUnreachable || raw
   }
 

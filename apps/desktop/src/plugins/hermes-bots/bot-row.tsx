@@ -633,11 +633,11 @@ export function GroupRow({ active, group, members, needsYou, onOpen, onDisband, 
             const pinned = toggleGroupChatPinned(group)
 
             if (pinned !== null) {
-              host.notify({ kind: 'info', message: `${group} ${pinned ? 'pinned to top' : 'unpinned'}` })
+              host.notify({ kind: 'info', message: pinned ? b.bot.pinnedToast(group) : b.bot.unpinnedToast(group) })
             }
           }}
         >
-          {room.pinned ? 'Unpin' : 'Pin to top'}
+          {room.pinned ? b.bot.unpin : b.bot.pinToTop}
         </ContextMenuItem>
         {/* Filing — the same submenu a bot row gets, driving the room-record
             assignment instead of profile meta. */}

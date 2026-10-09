@@ -94,7 +94,7 @@ async function adoptServedDashboardToken(baseUrl, spawnToken, { childAlive, labe
 
   if (isForeignBackendToken({ servedToken, spawnToken, childAlive: childAlive() })) {
     throw new Error(
-      `${label} exited and ${dashboardIndexUrl(baseUrl)} is served by a process we did not spawn; refusing its session token.`
+      `${label} 已退出，而 ${dashboardIndexUrl(baseUrl)} 由我们未启动的进程提供服务；拒绝使用它的会话令牌。`
     )
   }
 

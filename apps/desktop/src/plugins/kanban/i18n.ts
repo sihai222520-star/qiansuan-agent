@@ -895,9 +895,9 @@ const zh: KanbanMessages = {
     blockedTitle: '任务受阻 — 需要你的输入',
     blockLoopTitle: '任务已转入分类 — 需要人工决定',
     gaveUpTitle: '任务已停止',
-    gaveUpBody: '黔算智能体 无法完成这个任务。打开看板查看原因并重新分配。',
-    crashedTitle: '任务遇到问题 — 黔算智能体 将自动重试',
-    timedOutTitle: '任务耗时过长 — 黔算智能体 将自动重试',
+    gaveUpBody: '黔算智能体无法完成这个任务。打开看板查看原因并重新分配。',
+    crashedTitle: '任务遇到问题 — 黔算智能体将自动重试',
+    timedOutTitle: '任务耗时过长 — 黔算智能体将自动重试',
     openKanban: '打开看板',
     artifacts: (n: number) => `${n} 个产物`
   }
@@ -1119,9 +1119,9 @@ const zhHant: KanbanMessages = {
     blockedTitle: '任務受阻 — 需要你的輸入',
     blockLoopTitle: '任務已轉入分類 — 需要人工決定',
     gaveUpTitle: '任務已停止',
-    gaveUpBody: '黔算智能體 無法完成這個任務。開啟看板查看原因並重新指派。',
-    crashedTitle: '任務遇到問題 — 黔算智能體 將自動重試',
-    timedOutTitle: '任務耗時過長 — 黔算智能體 將自動重試',
+    gaveUpBody: '黔算智能體無法完成這個任務。開啟看板查看原因並重新指派。',
+    crashedTitle: '任務遇到問題 — 黔算智能體將自動重試',
+    timedOutTitle: '任務耗時過長 — 黔算智能體將自動重試',
     openKanban: '開啟看板',
     artifacts: (n: number) => `${n} 個產物`
   }

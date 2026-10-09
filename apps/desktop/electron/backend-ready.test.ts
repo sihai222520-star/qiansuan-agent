@@ -123,7 +123,7 @@ test('rejects on a child error event', async () => {
 
 test('a late announcement after timeout does not throw (listeners torn down)', async () => {
   const child = makeFakeChild()
-  await assert.rejects(waitForDashboardPort(child, 20), /Timed out/)
+  await assert.rejects(waitForDashboardPort(child, 20), /超时/)
   // The orphaned backend may still print its READY line later; the watcher
   // must have detached so this emit is a no-op rather than a double-settle.
   assert.doesNotThrow(() => {
@@ -295,7 +295,7 @@ test('bufferedOutput without a sentinel still times out (no false positive)', as
     () => 'no sentinel here\n'
   )
 
-  await assert.rejects(wait, /Timed out waiting/)
+  await assert.rejects(wait, /等待后端报告端口超时/)
 })
 
 test('the merged-tail seed recovers a sentinel spliced onto a partial stderr line (#103792)', async () => {
@@ -320,7 +320,7 @@ test('the merged-tail seed does not match prose that merely names the sentinel',
     () => 'still waiting for HERMES_BACKEND_READY from the backend\n'
   )
 
-  await assert.rejects(wait, /Timed out waiting/)
+  await assert.rejects(wait, /等待后端报告端口超时/)
 })
 
 // ---------------------------------------------------------------------------
@@ -356,7 +356,7 @@ test(
     child.stdout.emit('data', 'hermes: finishing an interrupted source update...\n')
     await assert.rejects(
       wait,
-      /Timed out waiting for Hermes backend port announcement .* while an update completion was in progress/
+      /等待后端报告端口超时（\d+ms）（更新收尾正在进行）/
     )
   },
   6 * 60_000

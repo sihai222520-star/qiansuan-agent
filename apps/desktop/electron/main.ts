@@ -2252,7 +2252,7 @@ let bootProgressState = {
   error: null,
   fakeMode: BOOT_FAKE_MODE,
   isCloudBackendDown: false,
-  message: '正在启动黔算智能体后端',
+  message: '等待启动黔算智能体后端',
   phase: 'idle',
   progress: 0,
   retryable: false,
@@ -2862,7 +2862,7 @@ async function waitForFirstRunSetupChoice(backend) {
   updateBootProgress(
     {
       error: null,
-      message: 'Waiting for first-run setup choice',
+      message: '等待首次启动设置选择',
       phase: 'bootstrap.choice',
       progress: 12,
       running: true
@@ -5343,7 +5343,7 @@ async function resolveHermesBackend(backendArgs: string[]): Promise<ResolvedHerm
           (await verifyHermesCli(hermesCommand, { shell: shellForProbe }))
         ) {
           return {
-            label: `检测到已有命令行程序：${hermesCommand}`,
+            label: `检测到已有后端命令行程序：${hermesCommand}`,
             command: hermesCommand,
             args: backendArgs,
             bootstrap: false,
@@ -5465,7 +5465,7 @@ async function ensureRuntime(
   assertStillOwned()
 
   if (!backend.bootstrap) {
-    await advanceBootProgress('runtime.external', `Using ${backend.label}`, 32)
+    await advanceBootProgress('runtime.external', `使用后端：${backend.label}`, 32)
 
     return backend
   }
@@ -13180,8 +13180,8 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
 
     const readyFile = backend.readyFile ? makeDashboardReadyFile() : null
 
-    await advanceBootProgress('backend.spawn', `Starting Hermes backend via ${backend.label}`, 84)
-    rememberLog(`Starting Hermes backend via ${backend.label}`)
+    await advanceBootProgress('backend.spawn', `正在通过 ${backend.label} 启动后端`, 84)
+    rememberLog(`Starting backend via ${backend.label}`)
 
     const profile = primaryProfile
     const parentStartMarker = await desktopParentStartMarker()
@@ -13357,7 +13357,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
       }
     })
 
-    await advanceBootProgress('backend.port', 'Waiting for Hermes backend to launch', 86)
+    await advanceBootProgress('backend.port', '等待后端启动', 86)
     backendConnectionState.assertCurrentAttempt(connectionAttempt)
 
     // Discover the ephemeral port the child bound to
@@ -13369,7 +13369,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
     }
 
     const baseUrl = `http://127.0.0.1:${port}`
-    await advanceBootProgress('backend.wait', 'Waiting for Hermes backend to become ready', 90)
+    await advanceBootProgress('backend.wait', '等待后端就绪', 90)
     backendConnectionState.assertCurrentAttempt(connectionAttempt)
     await Promise.race([waitForHermes(baseUrl, token), backendStartFailed])
     backendConnectionState.assertCurrentAttempt(connectionAttempt)
@@ -13514,7 +13514,7 @@ async function runHermesStart({ supervisorRecovery = false }: { supervisorRecove
       {
         error: message,
         isCloudBackendDown: isCloudBackendDown || undefined,
-        message: `Desktop boot failed: ${message}`,
+        message: `桌面启动失败：${message}`,
         phase: 'backend.error',
         // Renderer contract for the self-heal loop (#82679): a transient
         // REMOTE failure (dropped SSH/HTTP registered connection, mint

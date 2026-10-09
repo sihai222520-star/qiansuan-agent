@@ -54,7 +54,7 @@ export function createBackendConnectionState<TProcess, TConnection>(): BackendCo
   return {
     startAttempt(): BackendConnectionAttempt<TConnection> {
       if (stopping) {
-        throw new Error('The previous backend has not stopped. Retry its shutdown before starting a replacement.')
+        throw new Error('上一个后端还没有停止。请先重试关闭它，再启动新的。')
       }
 
       return { generation, promise: null }

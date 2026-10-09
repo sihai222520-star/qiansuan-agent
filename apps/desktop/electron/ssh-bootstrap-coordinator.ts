@@ -58,7 +58,7 @@ function createBootstrapCoordinator() {
       isCurrent: () => !controller.signal.aborted && generations.get(scope) === generation,
       assertCurrent() {
         if (!this.isCurrent()) {
-          const error: any = new Error('SSH bootstrap was superseded by newer connection settings.')
+          const error: any = new Error('SSH 引导已被更新的连接设置接替。')
           error.kind = 'superseded'
           throw error
         }

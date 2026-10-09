@@ -156,7 +156,7 @@ export class AppInstallerStrategy {
 
     this.deps.emitUpdateProgress({
       stage: 'restart',
-      message: 'Applying the Hermes update — the window will close and the App Installer will finish.',
+      message: '正在应用黔算智能体更新——窗口将关闭，由 App Installer 完成安装。',
       percent: 100
     })
 

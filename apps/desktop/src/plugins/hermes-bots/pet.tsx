@@ -214,6 +214,7 @@ export function PetTab({ image, onImage }: PetTabProps) {
         </Button>
       ) : null}
       {filtered.length === 0 ? (
+        // 黔算：产品 zh 优先，此空态暂用中文字面量（与 bot-row 同一权衡）
         <div className="py-3 text-center text-xs text-(--ui-text-quaternary)">没有匹配的宠物。</div>
       ) : (
         <div

@@ -1255,8 +1255,8 @@ async function spawnRemoteDashboard(
 ) {
   if (!(await remoteSupportsSshOwnership(ssh, hermesPath))) {
     const err: any = new Error(
-      'The remote Hermes install does not support --ssh-session-token-file and --ssh-owner-nonce. ' +
-        'Update Hermes on the remote host to continue using Desktop SSH mode.'
+      '远程后端不支持 --ssh-session-token-file 和 --ssh-owner-nonce。' +
+        '请先更新远程主机上的后端，再继续使用桌面端 SSH 模式。'
     )
 
     err.kind = 'update-required'

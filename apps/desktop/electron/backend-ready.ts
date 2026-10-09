@@ -120,7 +120,7 @@ function waitForDashboardPort(
           cleanup()
           reject(
             new Error(
-              `Timed out waiting for Hermes backend port announcement (${timeoutMs}ms)${deadline ? ' while an update completion was in progress' : ''}`
+              `等待后端报告端口超时（${timeoutMs}ms）${deadline ? '（更新收尾正在进行）' : ''}`
             )
           )
         },
