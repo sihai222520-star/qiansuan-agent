@@ -985,12 +985,12 @@ fn stage_info(name: &str, title: &str) -> StageInfo {
 /// manifest here so the two can never drift apart.
 fn update_stages(include_install: bool) -> Vec<StageInfo> {
     let mut stages = vec![
-        stage_info("handoff", "Preparing to update"),
-        stage_info("update", "Downloading the latest version"),
-        stage_info("rebuild", "Rebuilding the desktop app"),
+        stage_info("handoff", "正在准备更新"),
+        stage_info("update", "正在下载最新版本"),
+        stage_info("rebuild", "正在重建桌面应用"),
     ];
     if include_install {
-        stages.push(stage_info("install", "Installing the update"));
+        stages.push(stage_info("install", "正在安装更新"));
     }
     stages
 }

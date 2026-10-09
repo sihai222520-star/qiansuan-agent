@@ -348,7 +348,7 @@ export async function cancelInstall(): Promise<void> {
 }
 
 export async function launchHermesDesktop(): Promise<void> {
-  if (fakeMode()) {throw new Error('Preview mode — launching is disabled.')}
+  if (fakeMode()) {throw new Error('预览模式——启动被禁用。')}
   const installRoot = $bootstrap.get().installRoot
 
   if (!installRoot) {throw new Error('no install root')}
@@ -386,20 +386,20 @@ interface FakeStage {
 }
 
 const FAKE_INSTALL_STAGES: FakeStage[] = [
-  { name: 'system-packages', title: 'System packages' },
+  { name: 'system-packages', title: '系统前置组件' },
   { name: 'uv', title: 'uv' },
-  { name: 'python', title: 'Python environment' },
-  { name: 'repo', title: 'Hermes repository' },
-  { name: 'dependencies', title: 'Python dependencies' },
-  { name: 'node', title: 'Node runtime' },
-  { name: 'desktop', title: 'Desktop app' }
+  { name: 'python', title: 'Python 环境' },
+  { name: 'repo', title: '下载黔算智能体' },
+  { name: 'dependencies', title: 'Python 依赖' },
+  { name: 'node', title: 'Node 运行时' },
+  { name: 'desktop', title: '桌面应用' }
 ]
 
 const FAKE_UPDATE_STAGES: FakeStage[] = [
-  { name: 'handoff', title: 'Preparing to update' },
-  { name: 'update', title: 'Downloading the latest version' },
-  { name: 'rebuild', title: 'Rebuilding the desktop app' },
-  { name: 'install', title: 'Installing the update' }
+  { name: 'handoff', title: '正在准备更新' },
+  { name: 'update', title: '正在下载最新版本' },
+  { name: 'rebuild', title: '正在重建桌面应用' },
+  { name: 'install', title: '正在安装更新' }
 ]
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
@@ -426,7 +426,7 @@ async function runFakeBoot(kind: FakeMode): Promise<void> {
 
     const cancelled = () => {
       if (!fakeCancelled) {return false}
-      fakeFail(kind === 'update' ? 'Update cancelled.' : 'Install cancelled.')
+      fakeFail(kind === 'update' ? '更新已取消。' : '安装已取消。')
       $route.set('failure')
 
       return true
@@ -463,8 +463,8 @@ async function runFakeBoot(kind: FakeMode): Promise<void> {
       }
 
       if (s.name === failAt) {
-        fakeStage(s.name, 'failed', durationMs, 'Simulated failure for preview.')
-        fakeFail('Simulated failure for preview (fake boot).')
+        fakeStage(s.name, 'failed', durationMs, '预览模式的模拟失败。')
+        fakeFail('预览模式的模拟失败（fake boot）。')
         $route.set('failure')
 
         return

@@ -58,6 +58,13 @@ if ($SkipSetup) { $NonInteractive = $true }
 # path/expression. The flag is checked before the entry dispatch at the bottom
 # (part 2), so dot-sourcing still loads every function definition.
 $script:IsDotSourced = $MyInvocation.InvocationName -eq '.'
+# 黔算：-Json 驱动（黔算安装器 / E2E）下整程强制 UTF-8 输出。Windows
+# PowerShell 5.1 默认按控制台代码页编码 stdout（中文 Windows=CP936），
+# 中文阶段标题会变乱码；Rust 侧 decode_console_bytes 优先按 UTF-8 解。
+# 副作用是正向的：uv/git 等 UTF-8 产出的原生输出也因此被正确解码。
+if ($Json -and -not $script:IsDotSourced) {
+    [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+}
 # `iex (irm .../install.ps1)` runs this text inside the caller's session,
 # where `exit` closes their PowerShell window (or ends their script). Only a
 # script file (-File, `& .\install.ps1`) owns its process and may exit with a
@@ -740,21 +747,21 @@ function Emit-Frame([bool]$ok, [string]$name, [bool]$skipped, [string]$reason = 
     $frame | ConvertTo-Json -Compress | Write-Output
 }
 
-$ProductTitle = if ($IncludeDesktop) { "Install command and app + desktop" } else { "Install command and app" }
+$ProductTitle = if ($IncludeDesktop) { "安装命令行、后端与桌面应用" } else { "安装命令行与后端" }
 $Stages = @(
-    @{ name = "prerequisites"; title = "System prerequisites"; category = "runtime"; needs_user_input = $false },
-    @{ name = "repository"; title = "Download Hermes Agent"; category = "runtime"; needs_user_input = $false },
-    @{ name = "venv"; title = "Create Python environment"; category = "runtime"; needs_user_input = $false },
-    @{ name = "python-deps"; title = "Install Python dependencies"; category = "runtime"; needs_user_input = $false },
-    @{ name = "config"; title = "Prepare config and skills"; category = "configuration"; needs_user_input = $false },
+    @{ name = "prerequisites"; title = "系统前置组件"; category = "runtime"; needs_user_input = $false },
+    @{ name = "repository"; title = "下载黔算智能体"; category = "runtime"; needs_user_input = $false },
+    @{ name = "venv"; title = "创建 Python 环境"; category = "runtime"; needs_user_input = $false },
+    @{ name = "python-deps"; title = "安装 Python 依赖"; category = "runtime"; needs_user_input = $false },
+    @{ name = "config"; title = "准备配置与技能"; category = "configuration"; needs_user_input = $false },
     # The shared completion tail -- the same call `hermes update` makes -- so
     # the manifest and the run cannot disagree. -IncludeDesktop selects the
     # desktop product inside this stage instead of adding a second build stage.
     @{ name = "products"; title = $ProductTitle; category = "runtime"; needs_user_input = $false },
-    @{ name = "setup"; title = "Configure API keys and settings"; category = "configuration"; needs_user_input = $true },
-    @{ name = "gateway"; title = "Configure gateway service"; category = "configuration"; needs_user_input = $true }
+    @{ name = "setup"; title = "配置 API 密钥与设置"; category = "configuration"; needs_user_input = $true },
+    @{ name = "gateway"; title = "配置网关服务"; category = "configuration"; needs_user_input = $true }
 )
-$Stages += @{ name = "complete"; title = "Finish install"; category = "runtime"; needs_user_input = $false }
+$Stages += @{ name = "complete"; title = "完成安装"; category = "runtime"; needs_user_input = $false }
 function Stage-Prerequisites {
     if (-not (Ensure-Git)) {
         Fail "no pinned Git artifact for this Windows architecture"

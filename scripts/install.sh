@@ -393,25 +393,25 @@ stage_names() {
 # "title|category|needs_user_input".
 products_record() {
     if [ "$INCLUDE_DESKTOP" = true ]; then
-        echo "Install command and app + desktop|runtime|false"
+        echo "安装命令行、后端与桌面应用|runtime|false"
     else
-        echo "Install command and app|runtime|false"
+        echo "安装命令行与后端|runtime|false"
     fi
 }
 
 # "$1" stage name -> its manifest record fields (title|category|needs_user_input).
 stage_record() {
     case "$1" in
-        prerequisites) echo "System prerequisites|runtime|false" ;;
-        repository)    echo "Download Hermes Agent|runtime|false" ;;
-        venv)          echo "Create Python environment|runtime|false" ;;
-        python-deps)   echo "Install Python dependencies|runtime|false" ;;
-        config)        echo "Prepare config and skills|configuration|false" ;;
+        prerequisites) echo "系统前置组件|runtime|false" ;;
+        repository)    echo "下载黔算智能体|runtime|false" ;;
+        venv)          echo "创建 Python 环境|runtime|false" ;;
+        python-deps)   echo "安装 Python 依赖|runtime|false" ;;
+        config)        echo "准备配置与技能|configuration|false" ;;
         products)      products_record ;;
-        setup)         echo "Configure API keys and settings|configuration|true" ;;
-        gateway)       echo "Configure gateway service|configuration|true" ;;
-        desktop)       echo "Build desktop app|runtime|false" ;;
-        complete)      echo "Finish install|runtime|false" ;;
+        setup)         echo "配置 API 密钥与设置|configuration|true" ;;
+        gateway)       echo "配置网关服务|configuration|true" ;;
+        desktop)       echo "构建桌面应用|runtime|false" ;;
+        complete)      echo "完成安装|runtime|false" ;;
     esac
 }
 
