@@ -299,9 +299,16 @@ function shouldPreserveConfiguredOnBootRace(runtime: RuntimeReadinessResult, sta
   )
 }
 
-function notifyReady(provider: string) {
+function notifyReady(provider: string, model?: string) {
   // 黔算：成功 toast 中文化（上游原文 "Hermes is ready" / "${provider} connected."）。
-  notify({ kind: 'success', title: '黔算智能体已就绪', message: `${provider} 已连接。` })
+  // 产品拍板 C（2026-10-09）：自动绑第一个模型时必须在提示里明说，且告知可换。
+  notify({
+    kind: 'success',
+    title: '黔算智能体已就绪',
+    message: model
+      ? `${provider} 已连接。已为你选择模型 ${model}，可随时在模型菜单更换。`
+      : `${provider} 已连接。`
+  })
 }
 
 // Human-friendly labels for tools auto-routed through the Nous Tool Gateway,
@@ -1299,7 +1306,7 @@ export async function saveOnboardingLocalEndpoint(
       return { ok: false, message: `已保存，但黔算智能体暂时连不上 ${resolvedUrl}。请检查地址和网络后重试。` }
     }
 
-    notifyReady('自定义 API（OpenAI 兼容）')
+    notifyReady('自定义 API（OpenAI 兼容）', model)
     completeDesktopOnboarding(true)
     ctx.onCompleted?.()
 
