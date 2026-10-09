@@ -254,8 +254,10 @@ export const englishBaseline: Record<string, string> = {
   "notifications.errors.restartHermesFailed": "27aed8e0e0358277",
   "notifications.errors.rpcOutOfSync": "9d3dcefdd0e28c19",
   "notifications.errors.storageFailure": "df889abe470ca71c",
-  // 黔算：以下三条是「产品文案改写」键（上游已有中文，为去品牌/中转站语义有意改写），
-  // 由手补指纹（qiansuan/scripts/build-zh-overlay.py 生成器不在仓库内）。
+  // 黔算：boot.errors.gatewayConnectionLostDetail 是「补缺」键（上游 zh 值为英文
+  // 占位，见 zh.ts:162），与下面三条「产品文案改写」键（上游已有中文，为去品牌/
+  // 中转站语义有意改写）性质不同，勿混。两类均由手补指纹
+  // （qiansuan/scripts/build-zh-overlay.py 生成器不在仓库内，异族审查 5085 号指出）。
   "boot.errors.gatewayConnectionLostDetail": "f4eb8bbda79e695a",
   "onboarding.apiKeyOptions.local.description": "56b874551380b9e6",
   "onboarding.apiKeyOptions.local.short": "4ff74fee4b291f59",
